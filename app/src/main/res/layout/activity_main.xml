@@ -10,7 +10,7 @@
         android:id="@+id/txtOverzicht"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         android:gravity="center"
         android:text="@string/overzicht"
         android:textSize="25sp"
@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="Expenses"
+        android:onClick="onBtnExpenses"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnBudget"
         app:layout_constraintHorizontal_bias="0.5"
@@ -64,7 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.3" />
+        app:layout_constraintGuide_percent="0.25" />
 
     <TextView
         android:id="@+id/txtExpensesForCat"
@@ -79,7 +80,7 @@
     <Spinner
         android:id="@+id/spExpenseCategorie"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:entries="@array/expenseCategories"
         app:layout_constraintBaseline_toBaselineOf="@+id/txtExpensesForCat"
         app:layout_constraintStart_toEndOf="@id/txtExpensesForCat"
