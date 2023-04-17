@@ -1,6 +1,7 @@
 package com.example.budgetbuddy;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -17,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.budgetbuddy.backendLogic.ExpenseAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,6 +38,9 @@ public class ExpensesViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_expenses_view);
         expenseList = findViewById(R.id.orderQueueView);
         addExpenseButton = (Button) findViewById(R.id.addExpenseButton);
+        ExpenseAdapter adapter = new ExpenseAdapter(expenses);
+        expenseList.setAdapter(adapter);
+        expenseList.setLayoutManager( new LinearLayoutManager(this));
         requestExpenseListQueue();
     }
 
