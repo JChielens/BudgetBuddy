@@ -7,12 +7,13 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/txtOverzicht"
+        android:id="@+id/lblOverzicht"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:gravity="center"
         android:text="@string/overzicht"
+        android:textAllCaps="true"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,63 +37,82 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="Budget"
+        android:text="@string/budget"
+        android:onClick="onBtnBudget"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btnExpenses" />
 
     <TextView
-        android:id="@+id/txtbudget"
+        android:id="@+id/lblbudget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Budget: € 0"
+        android:text="Budget: "
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/txtOverzicht" />
+        app:layout_constraintTop_toBottomOf="@+id/lblOverzicht" />
 
     <TextView
-        android:id="@+id/txtCurrentExpenses"
+        android:id="@+id/lblCurrentExpenses"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Current expenses: € 0"
+        android:text="Current expenses: "
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/txtbudget" />
+        app:layout_constraintTop_toBottomOf="@+id/lblbudget" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.25" />
+        app:layout_constraintGuide_percent="0.14" />
 
     <TextView
-        android:id="@+id/txtExpensesForCat"
+        android:id="@+id/lblExpensesForCat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="50dp"
         android:text="Total expenses for categorie:"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/txtCurrentExpenses" />
+        app:layout_constraintTop_toBottomOf="@+id/lblCurrentExpenses" />
 
     <Spinner
         android:id="@+id/spExpenseCategorie"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:entries="@array/expenseCategories"
-        app:layout_constraintBaseline_toBaselineOf="@+id/txtExpensesForCat"
-        app:layout_constraintStart_toEndOf="@id/txtExpensesForCat"
+        app:layout_constraintBaseline_toBaselineOf="@+id/lblExpensesForCat"
+        app:layout_constraintStart_toEndOf="@id/lblExpensesForCat"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/txtAmount"
+        android:id="@+id/lblAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:text="Amount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/txtExpensesForCat" />
+        app:layout_constraintTop_toBottomOf="@+id/lblExpensesForCat" />
+
+    <TextView
+        android:id="@+id/lblBudgetAmount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="0"
+        app:layout_constraintBaseline_toBaselineOf="@+id/lblbudget"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lblbudget" />
+
+    <TextView
+        android:id="@+id/lblCurrentExpensesAmount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="0"
+        app:layout_constraintBaseline_toBaselineOf="@+id/lblCurrentExpenses"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lblCurrentExpenses" />
 </androidx.constraintlayout.widget.ConstraintLayout>

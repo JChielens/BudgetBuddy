@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">BudgetBuddy</string>
     <string name="overzicht">Overzicht</string>
+    <string name="budget">Budget</string>
     <string-array name="expenseCategories">
         <item>Food</item>
         <item>Transportation</item>
