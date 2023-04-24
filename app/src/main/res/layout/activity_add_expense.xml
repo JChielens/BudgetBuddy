@@ -32,6 +32,7 @@
         android:layout_height="50dp"
         android:ems="10"
         android:inputType="textPersonName"
+        android:hint="example: new fridge"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lblDescription" />
@@ -112,7 +113,7 @@
         android:layout_height="50dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:hint="example: Delhaize"
+        android:hint="example: Krefel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lblPlace" />
@@ -131,7 +132,7 @@
         android:id="@+id/btnSubmit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Submit"
+        android:text="Add Expense"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

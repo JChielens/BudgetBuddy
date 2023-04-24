@@ -31,10 +31,12 @@ public class AddExpenseActivity extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth)
             {
+                monthOfYear++;
+                // want alle zaken van Calender class starten maand op index 0
                 if (monthOfYear >= 10) {
                     txtDate.setText(year + "-" + monthOfYear + "-" + dayOfMonth);
                 }
-                else txtDate.setText(year + "-" + 0 +monthOfYear + "-" + dayOfMonth);
+                else txtDate.setText(year + "-" + 0 + monthOfYear + "-" + dayOfMonth);
 
             }
         }, year, month, day);
