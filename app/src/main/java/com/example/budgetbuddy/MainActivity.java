@@ -14,25 +14,81 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.budgetbuddy.backendLogic.Expense;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.Inflater;
 
 public class MainActivity extends AppCompatActivity {
-
-
-
+    private String QUEUE_URL = "https://studev.groept.be/api/a22pt403/getAll";
     private TextView lblBudgetAmount;
-
+    private ArrayList<Expense> expenses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lblBudgetAmount = findViewById(R.id.lblBudgetAmount);
+        expenses = new ArrayList<Expense>();
+        Intent intent = getIntent();
+        if(intent.getExtras() != null){
+            expenses = intent.getParcelableArrayListExtra("expenses");
+        }
+        else{
+            requestExpenseListQueue();
+        }
+    }
 
+    private void requestExpenseListQueue(){
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        JsonArrayRequest queueRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                QUEUE_URL,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        processJSONResponse(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                MainActivity.this,
+                                "Unable to communicate with the server",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
+        requestQueue.add(queueRequest);
+    }
+
+    private void processJSONResponse(JSONArray response){
+        for(int i = 0; i < response.length(); i ++){
+            try {
+                Expense expense = new Expense(response.getJSONObject(i));
+                expenses.add(expense);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void onBtnExpenses (View Caller) {
         Intent intent = new Intent(this, ExpensesViewActivity.class);
+        intent.putParcelableArrayListExtra("expenses", expenses);
         startActivity(intent);
     }
 
