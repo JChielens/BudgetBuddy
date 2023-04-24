@@ -1,15 +1,42 @@
 package com.example.budgetbuddy.backendLogic;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Expense {
+public class Expense implements Parcelable {
     private int id;
     private float amount;
     private String date;
     private String place;
     private String description;
     private String category;
+
+    public static final Creator<Expense> CREATOR = new Creator<Expense>() {
+        @Override
+        public Expense createFromParcel(Parcel in) {
+            return new Expense(in);
+        }
+
+        @Override
+        public Expense[] newArray(int size) {
+            return new Expense[size];
+        }
+    };
+
+    public Expense(int id, float amount, String date, String place, String description, String category) {
+        this.id = id;
+        this.amount = amount;
+        this.date = date;
+        this.place = place;
+        this.description = description;
+        this.category = category;
+    }
+
     public Expense(JSONObject o){
         try{
             id = o.getInt("id");
@@ -21,6 +48,32 @@ public class Expense {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public Expense(Parcel in){
+        this(
+                in.readInt(),
+                in.readFloat(),
+                in.readString(),
+                in.readString(),
+                in.readString(),
+                in.readString()
+        );
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeFloat(amount);
+        parcel.writeString(date);
+        parcel.writeString(place);
+        parcel.writeString(description);
+        parcel.writeString(category);
     }
 
     public int getId(){

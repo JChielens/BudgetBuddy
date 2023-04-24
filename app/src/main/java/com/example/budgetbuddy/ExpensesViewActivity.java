@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExpensesViewActivity extends AppCompatActivity {
-    private List<Expense> expenses = new ArrayList<>();
+    private ArrayList<Expense> expenses;
     private String QUEUE_URL = "https://studev.groept.be/api/a22pt403/getAll";
     private RecyclerView expenseList;
     private Button addExpenseButton;
@@ -38,52 +38,20 @@ public class ExpensesViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_expenses_view);
         expenseList = findViewById(R.id.orderQueueView);
         addExpenseButton = (Button) findViewById(R.id.addExpenseButton);
+        expenseList.setLayoutManager( new LinearLayoutManager(this));
+        expenses = getIntent().getParcelableArrayListExtra("expenses");
         ExpenseAdapter adapter = new ExpenseAdapter(expenses);
         expenseList.setAdapter(adapter);
-        expenseList.setLayoutManager( new LinearLayoutManager(this));
-        requestExpenseListQueue();
-    }
-
-    private void requestExpenseListQueue(){
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        JsonArrayRequest queueRequest = new JsonArrayRequest(
-                Request.Method.GET,
-                QUEUE_URL,
-                null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        processJSONResponse(response);
-                        expenseList.getAdapter().notifyDataSetChanged();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(
-                                ExpensesViewActivity.this,
-                                "Unable to communicate with the server",
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-        requestQueue.add(queueRequest);
-    }
-
-    private void processJSONResponse(JSONArray response){
-        for(int i = 0; i < response.length(); i ++){
-            try {
-                Expense expense = new Expense(response.getJSONObject(i));
-                expenses.add(expense);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void onAddExpenseButton_clicked(View caller){
         Intent intent = new Intent(this, AddExpenseActivity.class);
+        startActivity(intent);
+    }
+
+    public void onBackButton_clicked(View caller){
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putParcelableArrayListExtra("expenses", expenses);
         startActivity(intent);
     }
 }
