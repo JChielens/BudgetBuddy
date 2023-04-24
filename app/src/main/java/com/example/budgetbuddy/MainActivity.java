@@ -43,16 +43,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if(intent.getExtras() != null){
             expenses = intent.getParcelableArrayListExtra("expenses");
-            Toast.makeText(
-                    MainActivity.this,
-                    "Intent",
-                    Toast.LENGTH_LONG).show();
         }
         else{
-            Toast.makeText(
-                    MainActivity.this,
-                    "Server",
-                    Toast.LENGTH_LONG).show();
             requestExpenseListQueue();
         }
     }
