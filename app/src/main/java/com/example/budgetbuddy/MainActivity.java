@@ -47,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
 
-        //Input aamaken
+
+        //Input aanmaken
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
         input.setHint("Budget");
@@ -56,23 +57,15 @@ public class MainActivity extends AppCompatActivity {
         //AlertDialog.Builder object Customizen
         builder.setTitle("Change Budget")
                 .setView(input)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        String budget = input.getText().toString();
-                        lblBudgetAmount.setText(budget);
+                .setPositiveButton("OK", (dialogInterface, i) -> {
+                    String budget = input.getText().toString();
+                    lblBudgetAmount.setText(budget);
 
-                        Toast.makeText(MainActivity.this ,
-                                "You changed your budget to €"+budget,
-                                Toast.LENGTH_LONG).show();
-                    }
+                    Toast.makeText(MainActivity.this ,
+                            "You changed your budget to €"+budget,
+                            Toast.LENGTH_LONG).show();
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
+                .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
 
         builder.show();
     }
