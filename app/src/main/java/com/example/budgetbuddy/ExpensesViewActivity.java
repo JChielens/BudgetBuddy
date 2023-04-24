@@ -28,16 +28,13 @@ import java.util.List;
 
 public class ExpensesViewActivity extends AppCompatActivity {
     private ArrayList<Expense> expenses;
-    private String QUEUE_URL = "https://studev.groept.be/api/a22pt403/getAll";
     private RecyclerView expenseList;
-    private Button addExpenseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expenses_view);
         expenseList = findViewById(R.id.orderQueueView);
-        addExpenseButton = (Button) findViewById(R.id.addExpenseButton);
         expenseList.setLayoutManager( new LinearLayoutManager(this));
         expenses = getIntent().getParcelableArrayListExtra("expenses");
         ExpenseAdapter adapter = new ExpenseAdapter(expenses);
@@ -46,7 +43,12 @@ public class ExpensesViewActivity extends AppCompatActivity {
 
     public void onAddExpenseButton_clicked(View caller){
         Intent intent = new Intent(this, AddExpenseActivity.class);
+        intent.putParcelableArrayListExtra("expenses", expenses);
         startActivity(intent);
+    }
+
+    public void onRemoveExpenseButton_clicked(View view) {
+
     }
 
     public void onBackButton_clicked(View caller){

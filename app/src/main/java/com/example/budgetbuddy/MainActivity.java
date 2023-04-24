@@ -41,15 +41,15 @@ public class MainActivity extends AppCompatActivity {
         lblBudgetAmount = findViewById(R.id.lblBudgetAmount);
         expenses = new ArrayList<Expense>();
         Intent intent = getIntent();
-        if(intent.getExtras() != null){
-            expenses = intent.getParcelableArrayListExtra("expenses");
-        }
-        else{
-            requestExpenseListQueue();
-        }
+        int out = intent.getExtras() != null ? getExpenseFromIntent(intent) : requestExpenseListQueue();
     }
 
-    private void requestExpenseListQueue(){
+    private int getExpenseFromIntent(Intent intent){
+        expenses = intent.getParcelableArrayListExtra("expenses");
+        return 0;
+    }
+
+    private int requestExpenseListQueue(){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         JsonArrayRequest queueRequest = new JsonArrayRequest(
@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
         requestQueue.add(queueRequest);
+        return 0;
     }
 
     private void processJSONResponse(JSONArray response){

@@ -16,7 +16,7 @@
 
         <TextView
             android:id="@+id/expenseId"
-            android:layout_width="match_parent"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:text="Id: "
             android:layout_marginStart="8dp"
@@ -26,27 +26,27 @@
 
         <TextView
             android:id="@+id/date"
-            android:layout_width="match_parent"
+            android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:text="Date: "
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/expenseId" />
+            app:layout_constraintStart_toEndOf="@+id/expenseId"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/category"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Category: "
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/date" />
+            app:layout_constraintStart_toEndOf="@+id/date"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/place"
-            android:layout_width="match_parent"
+            android:layout_width="158dp"
             android:layout_height="wrap_content"
             android:text="Place: "
             android:layout_marginStart="8dp"
@@ -56,13 +56,13 @@
 
         <TextView
             android:id="@+id/amount"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Amount: "
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/place" />
+            app:layout_constraintStart_toEndOf="@+id/place"
+            app:layout_constraintTop_toBottomOf="@+id/category" />
 
         <TextView
             android:id="@+id/description"

@@ -31,7 +31,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position){
         Expense expense = expenseList.get(position);
         ((TextView) holder.order.findViewById(R.id.expenseId)).setText("Id: " + expense.getId());
-        ((TextView) holder.order.findViewById(R.id.date)).setText("Date: " + expense.getDate());
+        ((TextView) holder.order.findViewById(R.id.date)).setText("Date: " + expense.getDate().substring(0,11));
         ((TextView) holder.order.findViewById(R.id.category)).setText("Category: " + expense.getCategory());
         ((TextView) holder.order.findViewById(R.id.place)).setText("Place: " + expense.getPlace());
         ((TextView) holder.order.findViewById(R.id.amount)).setText("Amount: " + Float.toString(expense.getAmount()));
