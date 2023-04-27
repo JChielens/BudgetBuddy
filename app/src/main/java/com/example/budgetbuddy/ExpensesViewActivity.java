@@ -39,6 +39,10 @@ public class ExpensesViewActivity extends AppCompatActivity {
         expenses = getIntent().getParcelableArrayListExtra("expenses");
         ExpenseAdapter adapter = new ExpenseAdapter(expenses);
         expenseList.setAdapter(adapter);
+        Toast.makeText(
+                ExpensesViewActivity.this,
+                expenses.get(expenses.size()-1).getDescription(),
+                Toast.LENGTH_LONG).show();
     }
 
     public void onAddExpenseButton_clicked(View caller){
