@@ -8,6 +8,9 @@ import androidx.annotation.NonNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Expense implements Parcelable {
     private int id;
     private float amount;
@@ -74,6 +77,16 @@ public class Expense implements Parcelable {
         parcel.writeString(place);
         parcel.writeString(description);
         parcel.writeString(category);
+    }
+
+    public Map<String, String> getPostParameters() {
+        Map<String, String> params = new HashMap<>();
+        params.put("date", date);
+        params.put("category", category);
+        params.put("place", place);
+        params.put("amount", Float.toString(amount));
+        params.put("description", description);
+        return params;
     }
 
     public int getId(){
