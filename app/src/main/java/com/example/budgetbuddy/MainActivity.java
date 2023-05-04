@@ -21,6 +21,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.budgetbuddy.backendLogic.Expense;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,23 +38,31 @@ public class MainActivity extends AppCompatActivity {
             "i/a22pt403/getAll";
     private TextView lblBudgetAmount;
     private ArrayList<Expense> expenses;
+    //BarChart variables:
+    private BarChart barChart;
+    private BarData barData;
+    private BarDataSet barDataSet;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lblBudgetAmount = findViewById(R.id.lblBudgetAmount);
+
         expenses = new ArrayList<Expense>();
         Intent intent = getIntent();
         int out = intent.getExtras() != null ? getExpenseFromIntent(intent) : requestExpenseListQueue();
+
+
     }
 
-    private int getExpenseFromIntent(Intent intent){
+    private int getExpenseFromIntent(Intent intent) {
         expenses = intent.getParcelableArrayListExtra("expenses");
         return 0;
     }
 
-    private int requestExpenseListQueue(){
+    private int requestExpenseListQueue() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         JsonArrayRequest queueRequest = new JsonArrayRequest(
@@ -78,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
         return 0;
     }
 
-    private void processJSONResponse(JSONArray response){
-        for(int i = 0; i < response.length(); i ++){
+    private void processJSONResponse(JSONArray response) {
+        for (int i = 0; i < response.length(); i++) {
             try {
                 Expense expense = new Expense(response.getJSONObject(i));
                 expenses.add(expense);
@@ -89,13 +100,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onBtnExpenses (View Caller) {
+    public void onBtnExpenses(View Caller) {
         Intent intent = new Intent(this, ExpensesViewActivity.class);
         intent.putParcelableArrayListExtra("expenses", expenses);
         startActivity(intent);
     }
 
-    public void onBtnBudget (View Caller) {
+    public void onBtnBudget(View Caller) {
         showDialog();
 
     }
@@ -104,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
 
         // AlertDialog.Builder object aanmaken
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
 
 
         //Input aanmaken
@@ -120,12 +130,16 @@ public class MainActivity extends AppCompatActivity {
                     String budget = input.getText().toString();
                     lblBudgetAmount.setText(budget);
 
-                    Toast.makeText(MainActivity.this ,
-                            "You changed your budget to €"+budget,
+                    Toast.makeText(MainActivity.this,
+                            "You changed your budget to €" + budget,
                             Toast.LENGTH_LONG).show();
                 })
                 .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
 
         builder.show();
+    }
+
+    public void createBarChart() {
+
     }
 }

@@ -7,12 +7,12 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/lblOverzicht"
+        android:id="@+id/lblOverview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:gravity="center"
-        android:text="@string/overzicht"
+        android:text="Overview"
         android:textAllCaps="true"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,7 +52,7 @@
         android:textSize="18dp"
         android:text="Budget: "
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/lblOverzicht" />
+        app:layout_constraintTop_toBottomOf="@+id/lblOverview" />
 
     <TextView
         android:id="@+id/lblCurrentExpenses"
@@ -117,4 +117,15 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/lblCurrentExpenses"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/lblCurrentExpenses" />
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="200dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
