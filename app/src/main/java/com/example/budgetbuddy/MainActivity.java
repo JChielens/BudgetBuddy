@@ -3,12 +3,9 @@ package com.example.budgetbuddy;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -24,13 +21,12 @@ import com.example.budgetbuddy.backendLogic.Expense;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.Inflater;
 
 public class MainActivity extends AppCompatActivity {
     private String QUEUE_URL = "https://studev.groept.be/ap" +
@@ -42,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private BarChart barChart;
     private BarData barData;
     private BarDataSet barDataSet;
+    private ArrayList<BarEntry> barEntriesArrayList;
 
     @Override
 
@@ -49,6 +46,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lblBudgetAmount = findViewById(R.id.lblBudgetAmount);
+        barChart = findViewById(R.id.barChart);
+        getBarEntries();
+        barDataSet = new BarDataSet(barEntriesArrayList, "last 4 months");
+        barData = new BarData(barDataSet);
 
         expenses = new ArrayList<Expense>();
         Intent intent = getIntent();
@@ -139,7 +140,17 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    public void createBarChart() {
+    public void getBarEntries() {
+
+        //vervangen door Database monthly expense entries - van de laatste 4 maanden
+
+        barEntriesArrayList = new ArrayList<BarEntry>();
+
+        barEntriesArrayList.add(new BarEntry(1f, 1));
+        barEntriesArrayList.add(new BarEntry(2f, 2));
+        barEntriesArrayList.add(new BarEntry(3f, 3));
+        barEntriesArrayList.add(new BarEntry(4f, 4));
 
     }
-}
+
+    }
