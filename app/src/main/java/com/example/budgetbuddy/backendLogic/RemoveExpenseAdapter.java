@@ -11,18 +11,19 @@ import com.example.budgetbuddy.R;
 
 import java.util.List;
 
-public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHolder>{
+
+public class RemoveExpenseAdapter extends RecyclerView.Adapter<RemoveExpenseAdapter.ViewHolder>{
 
     private List<Expense> expenseList;
 
-    public ExpenseAdapter(List<Expense> coffeeOrderList){
+    public RemoveExpenseAdapter(List<Expense> coffeeOrderList){
         this.expenseList = coffeeOrderList;
     }
 
     @Override
-    public ExpenseAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+    public RemoveExpenseAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View orderView = layoutInflater.inflate(R.layout.expense_info_overview, parent, false);
+        View orderView = layoutInflater.inflate(R.layout.expense_info_remove, parent, false);
         ViewHolder myViewHolder = new ViewHolder(orderView);
         return myViewHolder;
     }
@@ -57,4 +58,5 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
             order = (View) coffeeOrderView;
         }
     }
+
 }

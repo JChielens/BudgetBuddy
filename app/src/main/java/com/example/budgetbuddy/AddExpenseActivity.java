@@ -77,7 +77,6 @@ public class AddExpenseActivity extends AppCompatActivity {
                 Float.parseFloat(txtAmount.getText().toString()), txtDate.getText().toString(),
                 txtPlace.getText().toString(), txtDescription.getText().toString(),
                 categorySpinner.getSelectedItem().toString());
-        expenses.add(expense);
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest submitRequest = new StringRequest(
             Request.Method.POST,
@@ -85,6 +84,7 @@ public class AddExpenseActivity extends AppCompatActivity {
             new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
+                    expenses.add(expense);
                     goToExpenseView();
                 }
             },
