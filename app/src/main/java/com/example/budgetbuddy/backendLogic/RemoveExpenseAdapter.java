@@ -3,6 +3,8 @@ package com.example.budgetbuddy.backendLogic;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +27,7 @@ public class RemoveExpenseAdapter extends RecyclerView.Adapter<RemoveExpenseAdap
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View orderView = layoutInflater.inflate(R.layout.expense_info_remove, parent, false);
         ViewHolder myViewHolder = new ViewHolder(orderView);
+        myViewHolder.addCheckBox(myViewHolder.order.findViewById(R.id.removeCheckBox));
         return myViewHolder;
     }
 
@@ -42,7 +45,18 @@ public class RemoveExpenseAdapter extends RecyclerView.Adapter<RemoveExpenseAdap
         else{
             ((TextView) holder.order.findViewById(R.id.description)).setText("Description: " + expense.getDescription());
         }
-
+        CheckBox checkBox = holder.getChecked();
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(checkBox.isChecked()){
+                    expense.setChecked();
+                }
+                else{
+                    expense.setUnchecked();
+                }
+            }
+        });
     }
 
     @Override
@@ -52,10 +66,19 @@ public class RemoveExpenseAdapter extends RecyclerView.Adapter<RemoveExpenseAdap
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         public View order;
+        private CheckBox checked;
 
         public ViewHolder(View coffeeOrderView){
             super(coffeeOrderView);
             order = (View) coffeeOrderView;
+        }
+
+        public void addCheckBox(CheckBox cb){
+            checked = cb;
+        }
+
+        public CheckBox getChecked(){
+            return checked;
         }
     }
 

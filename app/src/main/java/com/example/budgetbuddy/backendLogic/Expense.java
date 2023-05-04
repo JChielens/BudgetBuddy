@@ -18,6 +18,7 @@ public class Expense implements Parcelable {
     private String place;
     private String description;
     private String category;
+    private boolean checked;
 
     public static final Creator<Expense> CREATOR = new Creator<Expense>() {
         @Override
@@ -38,6 +39,7 @@ public class Expense implements Parcelable {
         this.place = place;
         this.description = description;
         this.category = category;
+        checked = false;
     }
 
     public Expense(JSONObject o){
@@ -48,6 +50,7 @@ public class Expense implements Parcelable {
             place = o.getString("place");
             description = o.getString("description");
             category = o.getString("category");
+            checked = false;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -62,6 +65,7 @@ public class Expense implements Parcelable {
                 in.readString(),
                 in.readString()
         );
+        checked = false;
     }
 
     @Override
@@ -111,5 +115,17 @@ public class Expense implements Parcelable {
 
     public String getCategory() {
         return category;
+    }
+
+    public void setChecked(){
+        checked = true;
+    }
+
+    public void setUnchecked(){
+        checked = false;
+    }
+
+    public boolean isChecked(){
+        return checked;
     }
 }
