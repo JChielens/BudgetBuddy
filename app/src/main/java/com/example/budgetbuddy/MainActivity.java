@@ -30,7 +30,9 @@ import java.util.List;
 import java.util.zip.Inflater;
 
 public class MainActivity extends AppCompatActivity {
-    private String QUEUE_URL = "https://studev.groept.be/api/a22pt403/getAll";
+    private String QUEUE_URL = "https://studev.groept.be/ap" +
+            "" +
+            "i/a22pt403/getAll";
     private TextView lblBudgetAmount;
     private ArrayList<Expense> expenses;
 

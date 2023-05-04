@@ -32,6 +32,7 @@ public class AddExpenseActivity extends AppCompatActivity {
     private TextView txtDate;
     private EditText txtPlace;
     private ArrayList<Expense> expenses;
+    private TextView lblSelectedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +41,14 @@ public class AddExpenseActivity extends AppCompatActivity {
         txtDescription = findViewById(R.id.txtDescription);
         txtAmount = findViewById(R.id.txtAmount);
         categorySpinner = findViewById(R.id.spinner);
-        txtDate = findViewById(R.id.txtDate);
         txtPlace = findViewById(R.id.txtPlace);
         Intent intent = getIntent();
         expenses = intent.getParcelableArrayListExtra("expenses");
+        lblSelectedDate = findViewById(R.id.lblSelectedDate);
     }
 
-    public void onTxtDate (View Caller) {
+    public void onlblSelectedDate(View Caller) {
+        //here we get the current date:
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
@@ -59,9 +61,9 @@ public class AddExpenseActivity extends AppCompatActivity {
                 monthOfYear++;
                 // want alle zaken van Calender class starten maand op index 0
                 if (monthOfYear >= 10) {
-                    txtDate.setText(year + "-" + monthOfYear + "-" + dayOfMonth);
+                    lblSelectedDate.setText(year + "-" + monthOfYear + "-" + dayOfMonth);
                 }
-                else txtDate.setText(year + "-" + 0 + monthOfYear + "-" + dayOfMonth);
+                else lblSelectedDate.setText(year + "-" + 0 + monthOfYear + "-" + dayOfMonth);
 
             }
         }, year, month, day);
