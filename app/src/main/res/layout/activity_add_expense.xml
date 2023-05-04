@@ -98,7 +98,6 @@
         android:hint="YY/MM/DD"
         android:inputType="date"
         android:onClick="onlblSelectedDate"
-        android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -90,6 +90,7 @@ public class Expense implements Parcelable {
         params.put("place", place);
         params.put("amount", Float.toString(amount));
         params.put("description", description);
+        params.put("userid", Integer.toString(1));
         return params;
     }
 

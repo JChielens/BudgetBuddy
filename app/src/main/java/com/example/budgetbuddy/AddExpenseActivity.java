@@ -42,6 +42,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         txtAmount = findViewById(R.id.txtAmount);
         categorySpinner = findViewById(R.id.spinner);
         txtPlace = findViewById(R.id.txtPlace);
+        txtDate = findViewById(R.id.lblSelectedDate);
         Intent intent = getIntent();
         expenses = intent.getParcelableArrayListExtra("expenses");
         lblSelectedDate = findViewById(R.id.lblSelectedDate);
@@ -63,8 +64,9 @@ public class AddExpenseActivity extends AppCompatActivity {
                 if (monthOfYear >= 10) {
                     lblSelectedDate.setText(year + "-" + monthOfYear + "-" + dayOfMonth);
                 }
-                else lblSelectedDate.setText(year + "-" + 0 + monthOfYear + "-" + dayOfMonth);
-
+                else {
+                    lblSelectedDate.setText(year + "-" + 0 + monthOfYear + "-" + dayOfMonth);
+                }
             }
         }, year, month, day);
 
@@ -74,7 +76,7 @@ public class AddExpenseActivity extends AppCompatActivity {
 
     public void onBtnSubmit_Clicked(View Caller){
         Expense expense = new Expense(expenses.get(expenses.size()-1).getId() + 1,
-                Float.parseFloat(txtAmount.getText().toString()), txtDate.getText().toString(),
+                Float.parseFloat(txtAmount.getText().toString()), lblSelectedDate.getText().toString(),
                 txtPlace.getText().toString(), txtDescription.getText().toString(),
                 categorySpinner.getSelectedItem().toString());
         RequestQueue requestQueue = Volley.newRequestQueue(this);
