@@ -4,6 +4,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.icu.util.CurrencyAmount;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -19,9 +21,15 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.budgetbuddy.backendLogic.Expense;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.LargeValueFormatter;
+import com.github.mikephil.charting.formatter.StackedValueFormatter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,9 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Expense> expenses;
     //BarChart variables:
     private BarChart barChart;
-    private BarData barData;
-    private BarDataSet barDataSet;
-    private ArrayList<BarEntry> barEntriesArrayList;
 
     @Override
 
@@ -46,10 +51,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lblBudgetAmount = findViewById(R.id.lblBudgetAmount);
+
         barChart = findViewById(R.id.barChart);
-        getBarEntries();
-        barDataSet = new BarDataSet(barEntriesArrayList, "last 4 months");
-        barData = new BarData(barDataSet);
+        setupBarChart();
 
         expenses = new ArrayList<Expense>();
         Intent intent = getIntent();
@@ -129,10 +133,10 @@ public class MainActivity extends AppCompatActivity {
                 .setView(input)
                 .setPositiveButton("OK", (dialogInterface, i) -> {
                     String budget = input.getText().toString();
-                    lblBudgetAmount.setText(budget);
+                    lblBudgetAmount.setText(budget + " EUR");
 
                     Toast.makeText(MainActivity.this,
-                            "You changed your budget to €" + budget,
+                            "You changed your budget to " + budget + " EUR",
                             Toast.LENGTH_LONG).show();
                 })
                 .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
@@ -140,17 +144,69 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    public void getBarEntries() {
+    public void setupBarChart() {
 
-        //vervangen door Database monthly expense entries - van de laatste 4 maanden
+        barChart.getDescription().setEnabled(false);
+        barChart.setFitBars(true);
+        //barChart.setDrawValueAboveBar(false);
+        barChart.getLegend().setEnabled(false);
+        barChart.setNoDataText("You have not added any expenses yet");
 
-        barEntriesArrayList = new ArrayList<BarEntry>();
 
-        barEntriesArrayList.add(new BarEntry(1f, 1));
-        barEntriesArrayList.add(new BarEntry(2f, 2));
-        barEntriesArrayList.add(new BarEntry(3f, 3));
-        barEntriesArrayList.add(new BarEntry(4f, 4));
+        //TODO: ook rekening houden mocht de user nog geen expenses hebben ingegeven in de database!!
+        // bv in dat geval expensesMonthX = 0f
 
+        String month1 = "February"; //aanpassen m.b.v. database
+        String month2 = "March";
+        String month3 = "April";
+        String month4 = "May";
+
+        float expensesMonth1 = 1500f; //values aanpassen m.b.v. database
+        float expensesMonth2 = 1000f;
+        float expensesMonth3 = 2000f;
+        float expensesMonth4 = 1550f;
+
+
+        ArrayList<BarEntry> expensesPerMonthEntries = new ArrayList<>();
+        expensesPerMonthEntries.add(new BarEntry(0f, expensesMonth1));
+        expensesPerMonthEntries.add(new BarEntry(1f, expensesMonth2));
+        expensesPerMonthEntries.add(new BarEntry(2f, expensesMonth3));
+        expensesPerMonthEntries.add(new BarEntry(3f, expensesMonth4));
+
+        BarDataSet barDataSet = new BarDataSet(expensesPerMonthEntries, "Expenses last 4 months");
+        barDataSet.setValueTextSize(12f);
+        barDataSet.setValueTypeface(Typeface.SANS_SERIF);
+        barDataSet.setValueFormatter(new LargeValueFormatter(" EUR"));
+
+        BarData barData = new BarData(barDataSet);
+        barData.setBarWidth(0.7f);
+
+        barChart.setData(barData);
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(1f);
+        xAxis.setLabelCount(4);
+        xAxis.setTypeface(Typeface.SANS_SERIF);
+        xAxis.setTextSize(10f);
+
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(new String[]
+                {month1, month2, month3, month4}));
+
+        YAxis leftAxis = barChart.getAxisLeft();
+        leftAxis.setDrawLabels(false);
+        // I make my y-axis invisble this way.
+        // Because when I disable my y-axis the bars are not to scale anymore.
+
+        leftAxis.setEnabled(true);
+        leftAxis.setValueFormatter(new LargeValueFormatter(" EUR"));
+        leftAxis.setDrawGridLines(false);
+        // leftAxis.setGranularity(500f);
+        leftAxis.setAxisMinimum(0f); // start from zero
+
+
+        barChart.getAxisRight().setEnabled(false);
     }
 
     }
