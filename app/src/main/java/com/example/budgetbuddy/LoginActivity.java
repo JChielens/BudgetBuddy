@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginButton_Clicked(View caller){
-        String hash = hashPassword(passField.getText().toString());
+        String hash = hashPassword(passField.getText().toString().trim());
         checkIfPasswordCorrect(hash);
     }
 
@@ -71,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         JsonArrayRequest queueRequest = new JsonArrayRequest(
                 Request.Method.GET,
-                POST_URL + userField.getText().toString(),
+                POST_URL + userField.getText().toString().trim(),
                 null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -84,7 +84,10 @@ public class LoginActivity extends AppCompatActivity {
                                     goToMain(user.getInt("id"));
                                 }
                                 else {
-                                    // TODO: throw toast message
+                                    Toast.makeText(
+                                            LoginActivity.this,
+                                            "Password incorrect",
+                                            Toast.LENGTH_LONG).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -106,9 +109,9 @@ public class LoginActivity extends AppCompatActivity {
         requestQueue.add(queueRequest);
     }
 
-    private void goToMain(int id){
+    private void goToMain(int userId){
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("id", id);
+        intent.putExtra("userId", userId);
         startActivity(intent);
     }
 }

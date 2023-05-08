@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Expense> expenses;
     //BarChart variables:
     private BarChart barChart;
+    private int userId;
 
     @Override
 
@@ -57,7 +58,12 @@ public class MainActivity extends AppCompatActivity {
 
         expenses = new ArrayList<Expense>();
         Intent intent = getIntent();
-        int out = intent.getExtras() != null ? getExpenseFromIntent(intent) : requestExpenseListQueue();
+        userId = intent.getIntExtra("userId",1);
+        Toast.makeText(
+                MainActivity.this,
+                "User id: " + userId,
+                Toast.LENGTH_LONG).show();
+        int out = intent.getParcelableArrayListExtra("expenses") != null ? getExpenseFromIntent(intent) : requestExpenseListQueue();
 
 
     }
@@ -107,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onBtnExpenses(View Caller) {
         Intent intent = new Intent(this, ExpensesViewActivity.class);
+        intent.putExtra("userId", userId);
         intent.putParcelableArrayListExtra("expenses", expenses);
         startActivity(intent);
     }

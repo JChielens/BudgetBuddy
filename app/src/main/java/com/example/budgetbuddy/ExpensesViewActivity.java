@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class ExpensesViewActivity extends AppCompatActivity {
     private ArrayList<Expense> expenses;
     private RecyclerView expenseList;
+    private int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,7 @@ public class ExpensesViewActivity extends AppCompatActivity {
         expenseList = findViewById(R.id.expenseOverviewQueueView);
         expenseList.setLayoutManager( new LinearLayoutManager(this));
         expenses = getIntent().getParcelableArrayListExtra("expenses");
+        userId = getIntent().getIntExtra("userId", 1);
         ExpenseAdapter adapter = new ExpenseAdapter(expenses);
         expenseList.setAdapter(adapter);
     }
@@ -44,6 +46,7 @@ public class ExpensesViewActivity extends AppCompatActivity {
     public void onBackButton_clicked(View caller){
         Intent intent = new Intent(this, MainActivity.class);
         intent.putParcelableArrayListExtra("expenses", expenses);
+        intent.putExtra("userId", userId);
         startActivity(intent);
     }
 }
