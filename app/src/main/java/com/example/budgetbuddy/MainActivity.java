@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.icu.util.CurrencyAmount;
 import android.os.Bundle;
@@ -21,20 +22,30 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.budgetbuddy.backendLogic.Expense;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.formatter.StackedValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private String QUEUE_URL = "https://studev.groept.be/ap" +
@@ -45,15 +56,25 @@ public class MainActivity extends AppCompatActivity {
     //BarChart variables:
     private BarChart barChart;
 
+    private PieChart pieChart;
+    private HashMap<String, Float> expCategorieToAmount;
+
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lblBudgetAmount = findViewById(R.id.lblBudgetAmount);
+        expCategorieToAmount = new HashMap<String, Float>();
+        setupHashmap();
 
         barChart = findViewById(R.id.barChart);
         setupBarChart();
+        barChart.invalidate(); //refresh (tip: doen na aanpassen v/d data)
+
+        pieChart = findViewById(R.id.pieChart);
+        setupPieChart();
+        pieChart.invalidate();
 
         expenses = new ArrayList<Expense>();
         Intent intent = getIntent();
@@ -61,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
 
     private int getExpenseFromIntent(Intent intent) {
         expenses = intent.getParcelableArrayListExtra("expenses");
@@ -138,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this,
                             "You changed your budget to " + budget + " EUR",
                             Toast.LENGTH_LONG).show();
+                //TODO: ook aanpassen dat de budget i/d database wordt aangepast!
                 })
                 .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
 
@@ -208,5 +232,83 @@ public class MainActivity extends AppCompatActivity {
 
         barChart.getAxisRight().setEnabled(false);
     }
+
+    private void setupHashmap() {
+
+        expCategorieToAmount.put("Food", 150f); // $150 for food
+        expCategorieToAmount.put("Clothing", 100f); // $100 for clothing
+        expCategorieToAmount.put("Transportation", 50f); // $50 for transportation
+        expCategorieToAmount.put("Utilities", 100f); // $100 for utilities
+        expCategorieToAmount.put("Recreation and Entertainment", 50f); // $50 for recreation and entertainment
+        expCategorieToAmount.put("Medical", 50f); // $50 for medical
+        expCategorieToAmount.put("Insurance", 100f); // $100 for insurance
+        expCategorieToAmount.put("Saving", 100f); // $100 for saving
+        expCategorieToAmount.put("Investing", 100f); // $100 for investing
+
+        //TODO: if expenses>budget => deze "calculateUnused()" functie niet oproepen!!!
+        calculateUnused();
+
+    }
+
+    private void calculateUnused() {
+        float sumOfExpensesAmounts = 0f;
+
+        for (float amount : expCategorieToAmount.values()) {
+            sumOfExpensesAmounts += amount;
+        }
+
+        //TODO: deze lijn code vervangen door
+        // ofwel opvragen van database
+        // Ofwel budget opvragen van database bij onCreat and opslaan als "field" in de klasse.
+        float budget = 900f;
+
+        float unused = budget - sumOfExpensesAmounts;
+
+        expCategorieToAmount.put("Unused", unused);
+    }
+
+
+
+   private void setupPieChart() {
+
+        pieChart.setNoDataText("You have not added any expenses yet");
+        pieChart.setUsePercentValues(false);
+        pieChart.getDescription().setEnabled(false);
+        pieChart.setDrawEntryLabels(false);
+        pieChart.setUsePercentValues(true);
+        pieChart.setRotationEnabled(false);
+
+
+       Legend legend = pieChart.getLegend();
+       legend.setOrientation(Legend.LegendOrientation.VERTICAL);
+       legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+
+        ArrayList<PieEntry> expensesPerCategory = new ArrayList<>();
+        for (Map.Entry<String, Float> entry : expCategorieToAmount.entrySet()) {
+            expensesPerCategory.add(new PieEntry(entry.getValue(), entry.getKey()));
+        }
+
+       //initializing colors for the entries
+       //TODO: degelijke kleurencombinatie gebruiken
+       ArrayList<Integer> customColors = new ArrayList<>();
+       customColors.add(Color.parseColor("#304567"));
+       customColors.add(Color.parseColor("#309967"));
+       customColors.add(Color.parseColor("#476567"));
+       customColors.add(Color.parseColor("#890567"));
+       customColors.add(Color.parseColor("#a35567"));
+       customColors.add(Color.parseColor("#ff5f67"));
+       customColors.add(Color.parseColor("#3ca567"));
+       customColors.add(Color.parseColor("#C51162"));
+       customColors.add(Color.parseColor("#D500F9"));
+       customColors.add(Color.parseColor("#00B0FF"));
+
+        PieDataSet pieDataSet = new PieDataSet(expensesPerCategory, "Expenses per Expense Category");
+        pieDataSet.setColors(customColors);
+
+        PieData pieData = new PieData(pieDataSet);
+        pieData.setValueFormatter(new PercentFormatter()); //TODO: uitzoeken wrm deze niet werkt.
+
+        pieChart.setData(pieData);
+        }
 
     }
