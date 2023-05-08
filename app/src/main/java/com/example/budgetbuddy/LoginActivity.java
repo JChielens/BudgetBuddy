@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                                 JSONObject user = response.getJSONObject(0);
                                 String hashDatabase = user.getString("password");
                                 if(hashDatabase.equals(hash)){
-                                    goToMain();
+                                    goToMain(user.getInt("id"));
                                 }
                                 else {
                                     // TODO: throw toast message
@@ -106,8 +106,9 @@ public class LoginActivity extends AppCompatActivity {
         requestQueue.add(queueRequest);
     }
 
-    private void goToMain(){
+    private void goToMain(int id){
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("id", id);
         startActivity(intent);
     }
 }

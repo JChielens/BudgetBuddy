@@ -47,12 +47,10 @@ public class RegisterActivity extends AppCompatActivity {
         // TODO: register user
         String email = emailField.getText().toString();
         String username = userField.getText().toString();
-        String regex = "^[a-zA-Z0-9_!#$%&'*+\\=?`{|}~^.-]+@[a-zA-Z0-9]+[.]{1}[a-zA-Z0-9]{2,4}$";
+        String regex = "^[a-zA-Z0-9_!#$%&'*+\\=?`{|}~^.-]+@[a-zA-Z0-9]+[.][a-zA-Z0-9]{2,4}$";
         if(email.matches(regex)){
-            Toast.makeText(RegisterActivity.this,
-                    "Valid email address",
-                    Toast.LENGTH_LONG).show();
-            checkIfUsernameExists(username);
+            //checkIfUsernameExists(username);
+            registerUser();
         }
         else{
             Toast.makeText(RegisterActivity.this,
@@ -72,9 +70,11 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onResponse(JSONArray response) {
                         if(response.length() == 0){
                             registerUser();
+                        }
+                        else{
                             Toast.makeText(
                                     RegisterActivity.this,
-                                    "username doesnt exist yet",
+                                    "Username already used",
                                     Toast.LENGTH_LONG).show();
                         }
                     }
@@ -100,11 +100,15 @@ public class RegisterActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(
-                                RegisterActivity.this,
-                                "registered",
-                                Toast.LENGTH_LONG).show();
-                        toLogin();
+                        if(response.length() == 0){
+                            toLogin();
+                        }
+                        else{
+                            Toast.makeText(
+                                    RegisterActivity.this,
+                                    "Username already  used",
+                                    Toast.LENGTH_LONG).show();
+                        }
                     }
                 },
                 new Response.ErrorListener(){
@@ -112,7 +116,7 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(
                                 RegisterActivity.this,
-                                "Unable to remove the expense" + error,
+                                "Unable to communicate with the server" + error,
                                 Toast.LENGTH_LONG).show();
                     }
                 }
@@ -121,9 +125,9 @@ public class RegisterActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 /* Map<String, String> with key value pairs as data load */
                 Map<String, String> registerMap = new HashMap<>();
-                registerMap.put("username", userField.getText().toString());
-                registerMap.put("password", hashPassword(passField.getText().toString()));
-                registerMap.put("email", emailField.getText().toString());
+                registerMap.put("username", userField.getText().toString().trim());
+                registerMap.put("password", hashPassword(passField.getText().toString().trim()));
+                registerMap.put("email", emailField.getText().toString().trim());
                 return registerMap;
             }
         };
