@@ -24,7 +24,9 @@ import com.example.budgetbuddy.backendLogic.Expense;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -38,6 +40,8 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.formatter.StackedValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.json.JSONArray;
@@ -67,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         lblBudgetAmount = findViewById(R.id.lblBudgetAmount);
         expCategorieToAmount = new HashMap<String, Float>();
-        setupHashmap();
+        //setupHashmap();
 
         barChart = findViewById(R.id.barChart);
         setupBarChart();
@@ -182,6 +186,8 @@ public class MainActivity extends AppCompatActivity {
         //barChart.setDrawValueAboveBar(false);
         barChart.getLegend().setEnabled(false);
         barChart.setNoDataText("You have not added any expenses yet");
+        barChart.setDoubleTapToZoomEnabled(false);
+        barChart.setPinchZoom(true); //TODO: testen op Android gsm
 
 
         //TODO: ook rekening houden mocht de user nog geen expenses hebben ingegeven in de database!!
@@ -275,48 +281,57 @@ public class MainActivity extends AppCompatActivity {
         expCategorieToAmount.put("Unused", unused);
     }
 
+    private void setupPieChart() {
+        initializeChartAppearance();
+        addDataToChart();
+    }
 
-
-   private void setupPieChart() {
-
+    private void initializeChartAppearance() {
         pieChart.setNoDataText("You have not added any expenses yet");
-        pieChart.setUsePercentValues(false);
+        pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(false);
         pieChart.setDrawEntryLabels(false);
         pieChart.setUsePercentValues(true);
         pieChart.setRotationEnabled(false);
+        pieChart.getLegend().setEnabled(false);
+        MarkerView mv = new CustomMarkerView(this, R.layout.marker_view);
+        pieChart.setMarker(mv);
+    }
 
-
-       Legend legend = pieChart.getLegend();
-       legend.setOrientation(Legend.LegendOrientation.VERTICAL);
-       legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-
+    private void addDataToChart() {
         ArrayList<PieEntry> expensesPerCategory = new ArrayList<>();
         for (Map.Entry<String, Float> entry : expCategorieToAmount.entrySet()) {
             expensesPerCategory.add(new PieEntry(entry.getValue(), entry.getKey()));
         }
 
-       //initializing colors for the entries
-       //TODO: degelijke kleurencombinatie gebruiken
-       ArrayList<Integer> customColors = new ArrayList<>();
-       customColors.add(Color.parseColor("#304567"));
-       customColors.add(Color.parseColor("#309967"));
-       customColors.add(Color.parseColor("#476567"));
-       customColors.add(Color.parseColor("#890567"));
-       customColors.add(Color.parseColor("#a35567"));
-       customColors.add(Color.parseColor("#ff5f67"));
-       customColors.add(Color.parseColor("#3ca567"));
-       customColors.add(Color.parseColor("#C51162"));
-       customColors.add(Color.parseColor("#D500F9"));
-       customColors.add(Color.parseColor("#00B0FF"));
+        ArrayList<Integer> customColors = getCustomColors();
 
         PieDataSet pieDataSet = new PieDataSet(expensesPerCategory, "Expenses per Expense Category");
         pieDataSet.setColors(customColors);
 
         PieData pieData = new PieData(pieDataSet);
-        pieData.setValueFormatter(new PercentFormatter()); //TODO: uitzoeken wrm deze niet werkt.
+        pieData.setValueFormatter(new PercentFormatter(pieChart));
 
         pieChart.setData(pieData);
-        }
+    }
+
+
+    private ArrayList<Integer> getCustomColors() {
+        //initializing colors for the entries
+        //TODO: degelijke kleurencombinatie gebruiken
+        ArrayList<Integer> customColors = new ArrayList<>();
+        customColors.add(Color.parseColor("#304567"));
+        customColors.add(Color.parseColor("#309967"));
+        customColors.add(Color.parseColor("#476567"));
+        customColors.add(Color.parseColor("#890567"));
+        customColors.add(Color.parseColor("#a35567"));
+        customColors.add(Color.parseColor("#ff5f67"));
+        customColors.add(Color.parseColor("#3ca567"));
+        customColors.add(Color.parseColor("#C51162"));
+        customColors.add(Color.parseColor("#D500F9"));
+        customColors.add(Color.parseColor("#00B0FF"));
+
+        return customColors;
+    }
 
     }
