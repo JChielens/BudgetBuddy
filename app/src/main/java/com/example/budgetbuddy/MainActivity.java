@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         lblBudgetAmount = findViewById(R.id.lblBudgetAmount);
         expCategorieToAmount = new HashMap<String, Float>();
-        //setupHashmap();
+        setupHashmap();
 
         barChart = findViewById(R.id.barChart);
         setupBarChart();
