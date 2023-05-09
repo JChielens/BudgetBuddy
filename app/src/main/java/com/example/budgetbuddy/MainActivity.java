@@ -220,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
         YAxis leftAxis = barChart.getAxisLeft();
         leftAxis.setDrawLabels(false);
+        leftAxis.setAxisLineColor(Color.TRANSPARENT);
         // I make my y-axis invisble this way.
         // Because when I disable my y-axis the bars are not to scale anymore.
 
