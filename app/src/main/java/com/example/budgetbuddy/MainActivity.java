@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.icu.util.CurrencyAmount;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -23,26 +22,18 @@ import com.android.volley.toolbox.Volley;
 import com.example.budgetbuddy.backendLogic.Expense;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.IMarker;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.formatter.StackedValueFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,9 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    private String QUEUE_URL = "https://studev.groept.be/ap" +
-            "" +
-            "i/a22pt403/getAll";
+    private String QUEUE_URL = "https://studev.groept.be/api/a22pt403/getAllExpensesFromUser/";
     private TextView lblBudgetAmount;
     private ArrayList<Expense> expenses;
     //BarChart variables:
@@ -62,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private int userId;
 
     private PieChart pieChart;
-    private HashMap<String, Float> expCategorieToAmount;
+    private HashMap<String, Float> expCategoryToAmount;
 
     @Override
 
@@ -70,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lblBudgetAmount = findViewById(R.id.lblBudgetAmount);
-        expCategorieToAmount = new HashMap<String, Float>();
+        expCategoryToAmount = new HashMap<String, Float>();
         setupHashmap();
 
         barChart = findViewById(R.id.barChart);
@@ -93,8 +82,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
     private int getExpenseFromIntent(Intent intent) {
         expenses = intent.getParcelableArrayListExtra("expenses");
         return 0;
@@ -105,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
         JsonArrayRequest queueRequest = new JsonArrayRequest(
                 Request.Method.GET,
-                QUEUE_URL,
+                QUEUE_URL + userId,
                 null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -249,15 +236,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupHashmap() {
 
-        expCategorieToAmount.put("Food", 150f); // $150 for food
-        expCategorieToAmount.put("Clothing", 100f); // $100 for clothing
-        expCategorieToAmount.put("Transportation", 50f); // $50 for transportation
-        expCategorieToAmount.put("Utilities", 100f); // $100 for utilities
-        expCategorieToAmount.put("Recreation and Entertainment", 50f); // $50 for recreation and entertainment
-        expCategorieToAmount.put("Medical", 50f); // $50 for medical
-        expCategorieToAmount.put("Insurance", 100f); // $100 for insurance
-        expCategorieToAmount.put("Saving", 100f); // $100 for saving
-        expCategorieToAmount.put("Investing", 100f); // $100 for investing
+        expCategoryToAmount.put("Food", 150f); // $150 for food
+        expCategoryToAmount.put("Clothing", 100f); // $100 for clothing
+        expCategoryToAmount.put("Transportation", 50f); // $50 for transportation
+        expCategoryToAmount.put("Utilities", 100f); // $100 for utilities
+        expCategoryToAmount.put("Recreation and Entertainment", 50f); // $50 for recreation and entertainment
+        expCategoryToAmount.put("Medical", 50f); // $50 for medical
+        expCategoryToAmount.put("Insurance", 100f); // $100 for insurance
+        expCategoryToAmount.put("Saving", 100f); // $100 for saving
+        expCategoryToAmount.put("Investing", 100f); // $100 for investing
 
         //TODO: if expenses>budget => deze "calculateUnused()" functie niet oproepen!!!
         calculateUnused();
@@ -267,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
     private void calculateUnused() {
         float sumOfExpensesAmounts = 0f;
 
-        for (float amount : expCategorieToAmount.values()) {
+        for (float amount : expCategoryToAmount.values()) {
             sumOfExpensesAmounts += amount;
         }
 
@@ -278,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
 
         float unused = budget - sumOfExpensesAmounts;
 
-        expCategorieToAmount.put("Unused", unused);
+        expCategoryToAmount.put("Unused", unused);
     }
 
     private void setupPieChart() {
@@ -300,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void addDataToChart() {
         ArrayList<PieEntry> expensesPerCategory = new ArrayList<>();
-        for (Map.Entry<String, Float> entry : expCategorieToAmount.entrySet()) {
+        for (Map.Entry<String, Float> entry : expCategoryToAmount.entrySet()) {
             expensesPerCategory.add(new PieEntry(entry.getValue(), entry.getKey()));
         }
 
