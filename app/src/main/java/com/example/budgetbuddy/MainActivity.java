@@ -311,6 +311,7 @@ public class MainActivity extends AppCompatActivity {
 
         PieData pieData = new PieData(pieDataSet);
         pieData.setValueFormatter(new PercentFormatter(pieChart));
+        pieData.setValueTextSize(12f);
 
         pieChart.setData(pieData);
     }
@@ -320,16 +321,20 @@ public class MainActivity extends AppCompatActivity {
         //initializing colors for the entries
         //TODO: degelijke kleurencombinatie gebruiken
         ArrayList<Integer> customColors = new ArrayList<>();
-        customColors.add(Color.parseColor("#304567"));
-        customColors.add(Color.parseColor("#309967"));
-        customColors.add(Color.parseColor("#476567"));
-        customColors.add(Color.parseColor("#890567"));
-        customColors.add(Color.parseColor("#a35567"));
-        customColors.add(Color.parseColor("#ff5f67"));
-        customColors.add(Color.parseColor("#3ca567"));
-        customColors.add(Color.parseColor("#C51162"));
-        customColors.add(Color.parseColor("#D500F9"));
-        customColors.add(Color.parseColor("#00B0FF"));
+        customColors.add(Color.parseColor("#619ED6"));
+        customColors.add(Color.parseColor("#6BA547"));
+        customColors.add(Color.parseColor("#F7D027"));
+        customColors.add(Color.parseColor("#E48F1B"));
+        customColors.add(Color.parseColor("#B77EA3"));
+        customColors.add(Color.parseColor("#E64345"));
+        customColors.add(Color.parseColor("#60CEED"));
+        customColors.add(Color.parseColor("#9CF168"));
+        customColors.add(Color.parseColor("#F7EA4A"));
+        customColors.add(Color.parseColor("#FBC543"));
+        //extra/reserve colors
+//        customColors.add(Color.parseColor("#A9A9A9")); //grey for 'unused'
+//        customColors.add(Color.parseColor("#FFC9ED"));
+//        customColors.add(Color.parseColor("#E6696E"));
 
         return customColors;
     }
