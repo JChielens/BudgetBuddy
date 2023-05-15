@@ -180,14 +180,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void setupBarChart() {
 
-        barChart.getDescription().setEnabled(false);
-        barChart.setFitBars(true);
-        //barChart.setDrawValueAboveBar(false);
-        barChart.getLegend().setEnabled(false);
-        barChart.setNoDataText("You have not added any expenses yet");
-        barChart.setDoubleTapToZoomEnabled(false);
-        barChart.setPinchZoom(true); //TODO: testen op Android gsm
-
+        initializeBarChartAppearance();
+        setYAxisProperties();
 
         //TODO: ook rekening houden mocht de user nog geen expenses hebben ingegeven in de database!!
         // bv in dat geval expensesMonthX = 0f
@@ -232,19 +226,6 @@ public class MainActivity extends AppCompatActivity {
         xAxis.setValueFormatter(new IndexAxisValueFormatter(new String[]
                 {month1, month2, month3, month4}));
 
-        YAxis leftAxis = barChart.getAxisLeft();
-        leftAxis.setDrawLabels(false);
-        leftAxis.setAxisLineColor(Color.TRANSPARENT);
-        // I make my y-axis invisble this way.
-        // Because when I disable my y-axis the bars are not to scale anymore.
-
-        leftAxis.setEnabled(true);
-        leftAxis.setValueFormatter(new LargeValueFormatter(" EUR"));
-        leftAxis.setDrawGridLines(false);
-        // leftAxis.setGranularity(500f);
-        leftAxis.setAxisMinimum(0f); // start from zero
-
-
         barChart.getAxisRight().setEnabled(false);
     }
 
@@ -264,6 +245,27 @@ public class MainActivity extends AppCompatActivity {
         calculateUnused();
 
     }
+
+    private void initializeBarChartAppearance() {
+        barChart.getDescription().setEnabled(false);
+        barChart.setFitBars(true);
+        barChart.getLegend().setEnabled(false);
+        barChart.setNoDataText("You have not added any expenses yet");
+        barChart.setDoubleTapToZoomEnabled(false);
+        barChart.setPinchZoom(true);
+    }
+
+    private void setYAxisProperties() {
+        YAxis leftAxis = barChart.getAxisLeft();
+        leftAxis.setDrawLabels(false);
+        leftAxis.setAxisLineColor(Color.TRANSPARENT);
+        // makes Y-axis invisible - The y-axis doesn't get deleted because it changes proportions
+        leftAxis.setValueFormatter(new LargeValueFormatter(" EUR"));
+        leftAxis.setDrawGridLines(false);
+        // leftAxis.setGranularity(500f);
+        leftAxis.setAxisMinimum(0f); // start from zero
+    }
+
 
     private void calculateUnused() {
         float sumOfExpensesAmounts = 0f;
