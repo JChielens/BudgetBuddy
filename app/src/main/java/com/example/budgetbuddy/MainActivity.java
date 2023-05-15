@@ -276,13 +276,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void setupBarChart() {
-
-        initializeBarChartAppearance();
-        setYAxisProperties();
-        //TODO: ook rekening houden mocht de user nog geen expenses hebben ingegeven in de database!!
-        // bv in dat geval expensesMonthX = 0f
-
+    private void addDataToBarChart() {
         ArrayList<BarEntry> expensesPerMonthEntries = new ArrayList<>();
         expensesPerMonthEntries.add(new BarEntry(0f, Float.parseFloat(lastFourMonths[0][1])));
         expensesPerMonthEntries.add(new BarEntry(1f, Float.parseFloat(lastFourMonths[1][1])));
@@ -299,10 +293,15 @@ public class MainActivity extends AppCompatActivity {
         barData.setBarWidth(0.7f);
 
         barChart.setData(barData);
+    }
 
+    public void setupBarChart() {
+
+        initializeBarChartAppearance();
+        setYAxisProperties();
+        //TODO: ook rekening houden mocht de user nog geen expenses hebben ingegeven in de database!!
+        addDataToBarChart();
         setXAxisProperties();
-
-
         barChart.getAxisRight().setEnabled(false);
     }
 
