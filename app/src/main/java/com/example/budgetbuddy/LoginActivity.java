@@ -15,6 +15,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.budgetbuddy.backendLogic.Expense;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,8 +30,8 @@ import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity {
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
-    private EditText userField;
-    private EditText passField;
+    private TextInputEditText userField;
+    private TextInputEditText passField;
     private ArrayList<Expense> expenses;
     private float budget;
     private static final String POST_URL = "https://studev.groept.be/api/a22pt403/getHashedPasswordFromUsername/";
@@ -40,8 +42,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        userField = (EditText) findViewById(R.id.usernameField);
-        passField = (EditText) findViewById(R.id.passwordField1);
+        userField = (TextInputEditText) findViewById(R.id.inputUsernameField);
+        passField = (TextInputEditText) findViewById(R.id.inputPasswordField1);
         expenses = new ArrayList<>();
     }
 
