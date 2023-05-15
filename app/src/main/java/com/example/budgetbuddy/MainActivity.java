@@ -371,9 +371,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void calculateUnused() {
-        float sumOfExpensesAmounts = getExpensesByMonthAndYear(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
-        if(budget > sumOfExpensesAmounts){
-            expCategoryToAmount.put("Unused", budget - sumOfExpensesAmounts);
+        if(budget > currentExpenses){
+            expCategoryToAmount.put("Unused", budget - currentExpenses);
         }
 
     }
