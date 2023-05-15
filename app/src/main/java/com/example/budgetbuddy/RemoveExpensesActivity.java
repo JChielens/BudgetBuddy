@@ -27,6 +27,8 @@ import java.util.Map;
 
 public class RemoveExpensesActivity extends AppCompatActivity {
     private ArrayList<Expense> expenses;
+    private int userId;
+    private float budget;
     private RecyclerView expenseList;
     private CheckBox checked;
     private static final String POST_URL = "https://studev.groept.be/api/a22pt403/deleteRow/";
@@ -37,7 +39,10 @@ public class RemoveExpensesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_remove_expenses);
         expenseList = findViewById(R.id.expenseRemoveQueueView);
         expenseList.setLayoutManager( new LinearLayoutManager(this));
-        expenses = getIntent().getParcelableArrayListExtra("expenses");
+        Intent intent = getIntent();
+        expenses = intent.getParcelableArrayListExtra("expenses");
+        userId = intent.getIntExtra("userId", 1);
+        budget = intent.getFloatExtra("budget", 0);
         RemoveExpenseAdapter adapter = new RemoveExpenseAdapter(expenses);
         expenseList.setAdapter(adapter);
     }
@@ -54,6 +59,8 @@ public class RemoveExpensesActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, ExpensesViewActivity.class);
         intent.putParcelableArrayListExtra("expenses", expenses);
+        intent.putExtra("userId", userId);
+        intent.putExtra("budget", budget);
         startActivity(intent);
     }
 

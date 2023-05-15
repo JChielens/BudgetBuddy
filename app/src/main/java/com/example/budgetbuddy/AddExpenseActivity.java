@@ -31,8 +31,10 @@ public class AddExpenseActivity extends AppCompatActivity {
     private Spinner categorySpinner;
     private TextView txtDate;
     private EditText txtPlace;
-    private ArrayList<Expense> expenses;
     private TextView lblSelectedDate;
+    private ArrayList<Expense> expenses;
+    private int userId;
+    private float budget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,8 @@ public class AddExpenseActivity extends AppCompatActivity {
         txtDate = findViewById(R.id.lblSelectedDate);
         Intent intent = getIntent();
         expenses = intent.getParcelableArrayListExtra("expenses");
+        userId = intent.getIntExtra("userId", 1);
+        budget = intent.getFloatExtra("budget", 0);
         lblSelectedDate = findViewById(R.id.lblSelectedDate);
     }
 
@@ -79,6 +83,7 @@ public class AddExpenseActivity extends AppCompatActivity {
                 Float.parseFloat(txtAmount.getText().toString()), lblSelectedDate.getText().toString(),
                 txtPlace.getText().toString(), txtDescription.getText().toString(),
                 categorySpinner.getSelectedItem().toString());
+
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest submitRequest = new StringRequest(
             Request.Method.POST,
@@ -111,6 +116,8 @@ public class AddExpenseActivity extends AppCompatActivity {
 
     private void goToExpenseView(){
         Intent intent = new Intent(this, ExpensesViewActivity.class);
+        intent.putExtra("userId", userId);
+        intent.putExtra("budget", budget);
         intent.putParcelableArrayListExtra("expenses", expenses);
         startActivity(intent);
     }

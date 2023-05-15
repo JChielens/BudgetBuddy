@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.budgetbuddy.backendLogic.Expense;
 
@@ -18,6 +19,7 @@ public class ExpensesViewActivity extends AppCompatActivity {
     private ArrayList<Expense> expenses;
     private RecyclerView expenseList;
     private int userId;
+    private float budget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +27,10 @@ public class ExpensesViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_expenses_view);
         expenseList = findViewById(R.id.expenseOverviewQueueView);
         expenseList.setLayoutManager( new LinearLayoutManager(this));
-        expenses = getIntent().getParcelableArrayListExtra("expenses");
-        userId = getIntent().getIntExtra("userId", 1);
+        Intent intent = getIntent();
+        expenses = intent.getParcelableArrayListExtra("expenses");
+        userId = intent.getIntExtra("userId", 1);
+        budget = intent.getFloatExtra("budget", 0);
         ExpenseAdapter adapter = new ExpenseAdapter(expenses);
         expenseList.setAdapter(adapter);
     }
@@ -34,12 +38,16 @@ public class ExpensesViewActivity extends AppCompatActivity {
     public void onAddExpenseButton_clicked(View caller){
         Intent intent = new Intent(this, AddExpenseActivity.class);
         intent.putParcelableArrayListExtra("expenses", expenses);
+        intent.putExtra("userId", userId);
+        intent.putExtra("budget", budget);
         startActivity(intent);
     }
 
     public void onRemoveExpenseButton_clicked(View caller) {
         Intent intent = new Intent(this, RemoveExpensesActivity.class);
         intent.putParcelableArrayListExtra("expenses", expenses);
+        intent.putExtra("userId", userId);
+        intent.putExtra("budget", budget);
         startActivity(intent);
     }
 
@@ -47,6 +55,7 @@ public class ExpensesViewActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putParcelableArrayListExtra("expenses", expenses);
         intent.putExtra("userId", userId);
+        intent.putExtra("budget", budget);
         startActivity(intent);
     }
 }
