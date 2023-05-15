@@ -87,8 +87,9 @@ public class RemoveExpensesActivity extends AppCompatActivity {
         )   { //NOTE THIS PART: here we are passing the POST parameters to the webservice
             @Override
             protected Map<String, String> getParams() {
-                /* Map<String, String> with key value pairs as data load */
-                return e.getPostParameters();
+                Map<String,String> idMap = new HashMap<>();
+                idMap.put("id", Integer.toString(e.getId()));
+                return idMap;
             }
         };
         requestQueue.add(submitRequest);
