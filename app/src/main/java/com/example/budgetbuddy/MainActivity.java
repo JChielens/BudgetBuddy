@@ -44,6 +44,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         lastFourMonths = setupMonthsArray();
 
         setupBarChart();
-        barChart.invalidate(); //refresh (tip: doen na aanpassen v/d data)
+        barChart.invalidate(); //refresh
 
         setupPieChart();
         pieChart.invalidate();
@@ -269,6 +270,16 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(submitRequest);
     }
 
+    public void setupBarChart() {
+
+        initializeBarChartAppearance();
+        setYAxisProperties();
+        //TODO: ook rekening houden mocht de user nog geen expenses hebben ingegeven in de database!!
+        addDataToBarChart();
+        setXAxisProperties();
+        barChart.getAxisRight().setEnabled(false);
+    }
+
     private String[][] setupMonthsArray() {
         LocalDate now = LocalDate.now();
         String[][] array = new String[4][2];
@@ -303,15 +314,6 @@ public class MainActivity extends AppCompatActivity {
         barData.setBarWidth(0.7f);
 
         barChart.setData(barData);
-    }
-
-    public void setupBarChart() {
-
-        initializeBarChartAppearance();
-        setYAxisProperties();
-        addDataToBarChart();
-        setXAxisProperties();
-        barChart.getAxisRight().setEnabled(false);
     }
 
     private void setupHashmap() {
