@@ -4,18 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#2a2b2d"
     tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/lblOverview"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:drawablePadding="10dp"
+        app:drawableTint="@color/white"
         android:gravity="center"
         android:text="Overview"
         android:textAllCaps="true"
+        android:textColor="@color/white"
         android:textSize="25sp"
         android:typeface="serif"
+        app:drawableStartCompat="@drawable/pie_chart_fill1_wght400_grad0_opsz48"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,8 +30,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:text="Expenses"
         android:onClick="onBtnExpenses"
+        android:text="Expenses"
+        app:icon="@drawable/attach_money_fill1_wght700_grad0_opsz48"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnBudget"
         app:layout_constraintHorizontal_bias="0.5"
@@ -50,8 +56,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:textSize="18dp"
         android:text="Budget: "
+        android:textColor="@color/white"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/lblOverview" />
 
@@ -61,6 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Current expenses: "
+        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/lblbudget" />
 
@@ -73,11 +81,13 @@
 
     <TextView
         android:id="@+id/lblBudgetAmount"
-        android:layout_width="80dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="100 000"
-        android:textSize="18dp"
+        android:textColor="@color/white"
+        android:textSize="18sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/lblbudget"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/lblbudget" />
 
     <TextView
@@ -85,6 +95,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="0"
+        android:textColor="@color/white"
         app:layout_constraintBaseline_toBaselineOf="@+id/lblCurrentExpenses"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/lblCurrentExpenses" />

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.icu.util.CurrencyAmount;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -22,18 +23,26 @@ import com.android.volley.toolbox.Volley;
 import com.example.budgetbuddy.backendLogic.Expense;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.IMarker;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.formatter.StackedValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +54,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     private String QUEUE_URL = "https://studev.groept.be/api/a22pt403/getAllExpensesFromUser/";
     private TextView lblBudgetAmount;
+    private TextView lblCurrentExpensesAmount;
     private ArrayList<Expense> expenses;
     //BarChart variables:
     private BarChart barChart;
@@ -59,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lblBudgetAmount = findViewById(R.id.lblBudgetAmount);
+        lblCurrentExpensesAmount = findViewById(R.id.lblCurrentExpensesAmount);
+
         expCategoryToAmount = new HashMap<String, Float>();
         setupHashmap();
 
@@ -200,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
         BarDataSet barDataSet = new BarDataSet(expensesPerMonthEntries, "Expenses last 4 months");
         barDataSet.setValueTextSize(12f);
         barDataSet.setValueTypeface(Typeface.SANS_SERIF);
+        barDataSet.setValueTextColor(Color.WHITE);
         barDataSet.setValueFormatter(new LargeValueFormatter(" EUR"));
 
         BarData barData = new BarData(barDataSet);
@@ -213,6 +226,7 @@ public class MainActivity extends AppCompatActivity {
         xAxis.setGranularity(1f);
         xAxis.setLabelCount(4);
         xAxis.setTypeface(Typeface.SANS_SERIF);
+        xAxis.setTextColor(Color.WHITE);
         xAxis.setTextSize(10f);
 
         xAxis.setValueFormatter(new IndexAxisValueFormatter(new String[]
@@ -275,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeChartAppearance() {
         pieChart.setNoDataText("You have not added any expenses yet");
+        pieChart.setHoleColor(Color.TRANSPARENT);
         pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(false);
         pieChart.setDrawEntryLabels(false);
