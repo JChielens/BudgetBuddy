@@ -312,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
         expCategoryToAmount.put("Clothing", 100f); // $100 for clothing
         expCategoryToAmount.put("Transportation", 50f); // $50 for transportation
         expCategoryToAmount.put("Utilities", 100f); // $100 for utilities
-        expCategoryToAmount.put("Recreation and Entertainment", 50f); // $50 for recreation and entertainment
+        expCategoryToAmount.put("Entertainment", 50f); // $50 for recreation and entertainment
         expCategoryToAmount.put("Medical", 50f); // $50 for medical
         expCategoryToAmount.put("Insurance", 100f); // $100 for insurance
         expCategoryToAmount.put("Saving", 100f); // $100 for saving
