@@ -49,8 +49,8 @@ public class RegisterActivity extends AppCompatActivity {
         String username = userField.getText().toString();
         String regex = "^[a-zA-Z0-9_!#$%&'*+\\=?`{|}~^.-]+@[a-zA-Z0-9]+[.][a-zA-Z0-9]{2,4}$";
         if(email.matches(regex)){
-            //checkIfUsernameExists(username);
-            registerUser();
+            checkIfUsernameExists(username);
+            //registerUser();
         }
         else{
             Toast.makeText(RegisterActivity.this,
@@ -100,15 +100,7 @@ public class RegisterActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        if(response.length() == 0){
-                            toLogin();
-                        }
-                        else{
-                            Toast.makeText(
-                                    RegisterActivity.this,
-                                    "Username already  used",
-                                    Toast.LENGTH_LONG).show();
-                        }
+                        toLogin();
                     }
                 },
                 new Response.ErrorListener(){

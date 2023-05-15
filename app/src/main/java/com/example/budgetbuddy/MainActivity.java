@@ -52,7 +52,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    private String QUEUE_URL = "https://studev.groept.be/api/a22pt403/getAllExpensesFromUser/";
+    private static final String QUEUE_URL = "https://studev.groept.be/api/a22pt403/getAllExpensesFromUser/";
     private TextView lblBudgetAmount;
     private TextView lblCurrentExpensesAmount;
     private ArrayList<Expense> expenses;
@@ -68,38 +68,37 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         lblBudgetAmount = findViewById(R.id.lblBudgetAmount);
         lblCurrentExpensesAmount = findViewById(R.id.lblCurrentExpensesAmount);
+        barChart = findViewById(R.id.barChart);
+        pieChart = findViewById(R.id.pieChart);
 
         expCategoryToAmount = new HashMap<String, Float>();
-        setupHashmap();
-
-        barChart = findViewById(R.id.barChart);
-        setupBarChart();
-        barChart.invalidate(); //refresh (tip: doen na aanpassen v/d data)
-
-        pieChart = findViewById(R.id.pieChart);
-        setupPieChart();
-        pieChart.invalidate();
-
         expenses = new ArrayList<Expense>();
         Intent intent = getIntent();
         userId = intent.getIntExtra("userId",1);
+        if(intent.getParcelableArrayListExtra("expenses") != null){
+            expenses = intent.getParcelableArrayListExtra("expenses");
+        }
+        else{
+            requestExpenseListQueue();
+        }
+        setupHashmap();
+
+        setupBarChart();
+        barChart.invalidate(); //refresh (tip: doen na aanpassen v/d data)
+
+        setupPieChart();
+        pieChart.invalidate();
+
         Toast.makeText(
                 MainActivity.this,
                 "User id: " + userId,
                 Toast.LENGTH_LONG).show();
-        int out = intent.getParcelableArrayListExtra("expenses") != null ? getExpenseFromIntent(intent) : requestExpenseListQueue();
-
-
     }
 
-    private int getExpenseFromIntent(Intent intent) {
-        expenses = intent.getParcelableArrayListExtra("expenses");
-        return 0;
-    }
-
-    private int requestExpenseListQueue() {
+    private void requestExpenseListQueue() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         JsonArrayRequest queueRequest = new JsonArrayRequest(
@@ -123,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
         requestQueue.add(queueRequest);
-        return 0;
     }
 
     private void processJSONResponse(JSONArray response) {
@@ -146,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onBtnBudget(View Caller) {
         showDialog();
-
     }
 
     private void showDialog() {
