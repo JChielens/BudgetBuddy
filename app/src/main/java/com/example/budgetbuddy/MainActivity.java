@@ -369,19 +369,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void calculateUnused() {
-        float sumOfExpensesAmounts = 0f;
-
-        for (float amount : expCategoryToAmount.values()) {
-            sumOfExpensesAmounts += amount;
+        float sumOfExpensesAmounts = getExpensesByMonthAndYear(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
+        if(budget > sumOfExpensesAmounts){
+            expCategoryToAmount.put("Unused", budget - sumOfExpensesAmounts);
         }
 
-        //TODO: deze lijn code vervangen door
-        // ofwel opvragen van database
-        // Ofwel budget opvragen van database bij onCreat and opslaan als "field" in de klasse.
-
-        float unused = budget - sumOfExpensesAmounts;
-
-        expCategoryToAmount.put("Unused", unused);
     }
 
     private void setupPieChart() {
