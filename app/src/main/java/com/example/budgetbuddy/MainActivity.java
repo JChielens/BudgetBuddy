@@ -41,7 +41,6 @@ import org.json.JSONException;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -65,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
     private String[][] lastFourMonths;
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -84,12 +82,18 @@ public class MainActivity extends AppCompatActivity {
             expenses = intent.getParcelableArrayListExtra("expenses");
             budget = intent.getFloatExtra("budget",0);
             lblBudgetAmount.setText(budget + " EUR");
-            setCurrentExpenses();
+            currentExpenses = getExpensesByMonthAndYear(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
+            lblCurrentExpensesAmount.setText(currentExpenses + " EUR");
+            setupVisuals();
         }
         else{
             requestExpenseListQueue();
             requestBudget();
         }
+
+    }
+
+    private void setupVisuals(){
         setupHashmap();
         lastFourMonths = setupMonthsArray();
 
@@ -111,7 +115,9 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         processJSONResponse(response);
-                        setCurrentExpenses();
+                        currentExpenses = getExpensesByMonthAndYear(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
+                        lblCurrentExpensesAmount.setText(currentExpenses + " EUR");
+                        setupVisuals();
                     }
                 },
                 new Response.ErrorListener() {
@@ -169,16 +175,16 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(queueRequest);
     }
 
-    private void setCurrentExpenses(){
-        LocalDate now = LocalDate.now();
+    private float getExpensesByMonthAndYear(int monthToMatch, int yearToMatch){
+        int total = 0;
         for(Expense e : expenses){
             int month = Integer.parseInt(e.getDate().substring(5,7));
             int year = Integer.parseInt(e.getDate().substring(0,4));
-            if(month == now.getMonthValue() && year == now.getYear()){
-                currentExpenses += e.getAmount();
+            if(month == monthToMatch && year == yearToMatch){
+                total += e.getAmount();
             }
         }
-        lblCurrentExpensesAmount.setText(currentExpenses + " EUR");
+        return total;
     }
 
     public void onBtnExpenses(View Caller) {
@@ -215,6 +221,13 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this,
                             "You changed your budget to " + budget + " EUR",
                             Toast.LENGTH_LONG).show();
+//                    setupHashmap();
+//                    setupPieChart();
+//                    PieDataSet b = (PieDataSet) pieChart.getData().getDataSet();
+//                    b.notifyDataSetChanged();
+//                    pieChart.getData().notifyDataChanged();
+//                    pieChart.notifyDataSetChanged();
+//                    pieChart.invalidate();
                     postBudgetToDatabase(Integer.parseInt(budget));
                 })
                 .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
@@ -257,31 +270,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String[][] setupMonthsArray() {
+        LocalDate now = LocalDate.now();
+        String[][] array = new String[4][2];
+        for(int i = 0; i < 4; i++){
+            if(now.getMonthValue() > i){
+                array[i][0] = Month.of(now.getMonthValue() - i).name().toLowerCase();
+                array[i][1] = Float.toString(getExpensesByMonthAndYear(now.getMonthValue() - i, LocalDate.now().getYear()));
+            }
+            else{
+                array[i][0] = Month.of(now.getMonthValue() - i + 12).name().toLowerCase();
+                array[i][1] = Float.toString(getExpensesByMonthAndYear(now.getMonthValue() - i + 12, LocalDate.now().getYear()) - 1);
+            }
 
-        String month1 = "February"; //aanpassen m.b.v. database
-        String month2 = "March";
-        String month3 = "April";
-        String month4 = "May";
-
-        float expensesMonth1 = 1500f; //values aanpassen m.b.v. database
-        float expensesMonth2 = 1000f;
-        float expensesMonth3 = 2000f;
-        float expensesMonth4 = 1550f;
-
-        String[][] array = {{month1,Float.toString(expensesMonth1)},
-                            {month2,Float.toString(expensesMonth2)},
-                            {month3,Float.toString(expensesMonth3)},
-                            {month4,Float.toString(expensesMonth4)}};
+        }
         return array;
 
     }
 
     private void addDataToBarChart() {
         ArrayList<BarEntry> expensesPerMonthEntries = new ArrayList<>();
-        expensesPerMonthEntries.add(new BarEntry(0f, Float.parseFloat(lastFourMonths[0][1])));
-        expensesPerMonthEntries.add(new BarEntry(1f, Float.parseFloat(lastFourMonths[1][1])));
-        expensesPerMonthEntries.add(new BarEntry(2f, Float.parseFloat(lastFourMonths[2][1])));
-        expensesPerMonthEntries.add(new BarEntry(3f, Float.parseFloat(lastFourMonths[3][1])));
+        for(int i = 0; i < 4; i++){
+            expensesPerMonthEntries.add(new BarEntry(i, Float.parseFloat(lastFourMonths[3-i][1])));
+        }
 
         BarDataSet barDataSet = new BarDataSet(expensesPerMonthEntries, "Expenses last 4 months");
         barDataSet.setValueTextSize(12f);
@@ -299,25 +309,25 @@ public class MainActivity extends AppCompatActivity {
 
         initializeBarChartAppearance();
         setYAxisProperties();
-        //TODO: ook rekening houden mocht de user nog geen expenses hebben ingegeven in de database!!
         addDataToBarChart();
         setXAxisProperties();
         barChart.getAxisRight().setEnabled(false);
     }
 
     private void setupHashmap() {
-
-        expCategoryToAmount.put("Food", 150f); // $150 for food
-        expCategoryToAmount.put("Clothing", 100f); // $100 for clothing
-        expCategoryToAmount.put("Transportation", 50f); // $50 for transportation
-        expCategoryToAmount.put("Utilities", 100f); // $100 for utilities
-        expCategoryToAmount.put("Entertainment", 50f); // $50 for recreation and entertainment
-        expCategoryToAmount.put("Medical", 50f); // $50 for medical
-        expCategoryToAmount.put("Insurance", 100f); // $100 for insurance
-        expCategoryToAmount.put("Saving", 100f); // $100 for saving
-        expCategoryToAmount.put("Investing", 100f); // $100 for investing
-
-        //TODO: if expenses>budget => deze "calculateUnused()" functie niet oproepen!!!
+        expCategoryToAmount.clear();
+        for(Expense e : expenses){
+            int month = Integer.parseInt(e.getDate().substring(5,7));
+            int year = Integer.parseInt(e.getDate().substring(0,4));
+            if(month == LocalDate.now().getMonthValue() && year == LocalDate.now().getYear()){
+                if(expCategoryToAmount.containsKey(e.getCategory())){
+                    expCategoryToAmount.put(e.getCategory(), expCategoryToAmount.get(e.getCategory()) + e.getAmount());
+                }
+                else{
+                    expCategoryToAmount.put(e.getCategory(),e.getAmount());
+                }
+            }
+        }
         calculateUnused();
 
     }
@@ -353,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
         xAxis.setTextSize(10f);
 
         xAxis.setValueFormatter(new IndexAxisValueFormatter(new String[]
-                {lastFourMonths[0][0], lastFourMonths[1][0], lastFourMonths[2][0], lastFourMonths[3][0]}));
+                {lastFourMonths[3][0], lastFourMonths[2][0], lastFourMonths[1][0], lastFourMonths[0][0]}));
 
     }
 
@@ -368,7 +378,6 @@ public class MainActivity extends AppCompatActivity {
         //TODO: deze lijn code vervangen door
         // ofwel opvragen van database
         // Ofwel budget opvragen van database bij onCreat and opslaan als "field" in de klasse.
-        float budget = 900f;
 
         float unused = budget - sumOfExpensesAmounts;
 
