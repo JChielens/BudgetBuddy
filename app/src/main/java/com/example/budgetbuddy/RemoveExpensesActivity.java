@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -87,9 +88,7 @@ public class RemoveExpensesActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 /* Map<String, String> with key value pairs as data load */
-                Map<String, String> idMap = new HashMap<>();
-                idMap.put("id", Integer.toString(e.getId()));
-                return idMap;
+                return e.getPostParameters();
             }
         };
         requestQueue.add(submitRequest);

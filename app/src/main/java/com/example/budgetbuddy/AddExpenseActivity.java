@@ -22,6 +22,8 @@ import com.example.budgetbuddy.backendLogic.Expense;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 
 public class AddExpenseActivity extends AppCompatActivity {
@@ -65,11 +67,17 @@ public class AddExpenseActivity extends AppCompatActivity {
             {
                 monthOfYear++;
                 // want alle zaken van Calender class starten maand op index 0
-                if (monthOfYear >= 10) {
+                if (monthOfYear >= 10 && dayOfMonth >= 10) {
                     lblSelectedDate.setText(year + "-" + monthOfYear + "-" + dayOfMonth);
                 }
-                else {
+                else if (dayOfMonth >= 10){
                     lblSelectedDate.setText(year + "-" + 0 + monthOfYear + "-" + dayOfMonth);
+                }
+                else if (monthOfYear >= 10){
+                    lblSelectedDate.setText(year + "-" + monthOfYear + "-" + 0 + dayOfMonth);
+                }
+                else {
+                    lblSelectedDate.setText(year + "-" + 0 + monthOfYear + "-" + 0 + dayOfMonth);
                 }
             }
         }, year, month, day);
@@ -79,10 +87,9 @@ public class AddExpenseActivity extends AppCompatActivity {
     }
 
     public void onBtnSubmit_Clicked(View Caller){
-        Expense expense = new Expense(expenses.get(expenses.size()-1).getId() + 1,
-                Float.parseFloat(txtAmount.getText().toString()), lblSelectedDate.getText().toString(),
-                txtPlace.getText().toString(), txtDescription.getText().toString(),
-                categorySpinner.getSelectedItem().toString());
+        Expense expense = new Expense(userId, Float.parseFloat(txtAmount.getText().toString()),
+                lblSelectedDate.getText().toString(), txtPlace.getText().toString(),
+                txtDescription.getText().toString(), categorySpinner.getSelectedItem().toString());
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest submitRequest = new StringRequest(
@@ -92,6 +99,11 @@ public class AddExpenseActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(String response) {
                     expenses.add(expense);
+                    Collections.sort(expenses, new Comparator<Expense>() {
+                        public int compare(Expense o1, Expense o2) {
+                            return o1.getDate().compareTo(o2.getDate());
+                        }
+                    });
                     goToExpenseView();
                 }
             },
