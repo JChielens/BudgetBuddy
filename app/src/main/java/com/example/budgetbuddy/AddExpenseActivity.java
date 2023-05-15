@@ -16,16 +16,23 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.budgetbuddy.backendLogic.Expense;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 
 public class AddExpenseActivity extends AppCompatActivity {
     private static final String POST_URL = "https://studev.groept.be/api/a22pt403/addRow/";
+    private static final String ID_URL = "https://studev.groept.be/api/a22pt403/getLastIndex";
     private EditText txtDescription;
     private EditText txtAmount;
     private Spinner categorySpinner;
@@ -65,11 +72,17 @@ public class AddExpenseActivity extends AppCompatActivity {
             {
                 monthOfYear++;
                 // want alle zaken van Calender class starten maand op index 0
-                if (monthOfYear >= 10) {
+                if (monthOfYear >= 10 && dayOfMonth >= 10) {
                     lblSelectedDate.setText(year + "-" + monthOfYear + "-" + dayOfMonth);
                 }
-                else {
+                else if (dayOfMonth >= 10){
                     lblSelectedDate.setText(year + "-" + 0 + monthOfYear + "-" + dayOfMonth);
+                }
+                else if (monthOfYear >= 10){
+                    lblSelectedDate.setText(year + "-" + monthOfYear + "-" + 0 + dayOfMonth);
+                }
+                else {
+                    lblSelectedDate.setText(year + "-" + 0 + monthOfYear + "-" + 0 + dayOfMonth);
                 }
             }
         }, year, month, day);
@@ -79,10 +92,9 @@ public class AddExpenseActivity extends AppCompatActivity {
     }
 
     public void onBtnSubmit_Clicked(View Caller){
-        Expense expense = new Expense(expenses.get(expenses.size()-1).getId() + 1,
-                Float.parseFloat(txtAmount.getText().toString()), lblSelectedDate.getText().toString(),
-                txtPlace.getText().toString(), txtDescription.getText().toString(),
-                categorySpinner.getSelectedItem().toString());
+        Expense expense = new Expense(userId, Float.parseFloat(txtAmount.getText().toString()),
+                lblSelectedDate.getText().toString(), txtPlace.getText().toString(),
+                txtDescription.getText().toString(), categorySpinner.getSelectedItem().toString());
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest submitRequest = new StringRequest(
@@ -91,8 +103,7 @@ public class AddExpenseActivity extends AppCompatActivity {
             new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    expenses.add(expense);
-                    goToExpenseView();
+                    getIndex(expense);
                 }
             },
             new Response.ErrorListener(){
@@ -112,6 +123,44 @@ public class AddExpenseActivity extends AppCompatActivity {
             }
         };
         requestQueue.add(submitRequest);
+    }
+
+    private void getIndex(Expense e){
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        JsonArrayRequest queueRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                ID_URL,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            e.addId(response.getJSONObject(0).getInt("id"));
+                            expenses.add(e);
+                            Collections.sort(expenses, new Comparator<Expense>() {
+                                public int compare(Expense o1, Expense o2) {
+                                    return o1.getDate().compareTo(o2.getDate());
+                                }
+                            });
+                            goToExpenseView();
+
+                        } catch (JSONException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                AddExpenseActivity.this,
+                                "Unable to communicate with the server",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
+        requestQueue.add(queueRequest);
     }
 
     private void goToExpenseView(){

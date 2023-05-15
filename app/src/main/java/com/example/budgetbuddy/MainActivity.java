@@ -48,7 +48,6 @@ import java.util.Locale;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String POST_BUDGET_URL = "https://studev.groept.be/api/a22pt403/insertUpdateBudget/";
     private TextView lblBudgetAmount;
     private TextView lblCurrentExpensesAmount;
     private ArrayList<Expense> expenses;
@@ -117,84 +116,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onBtnBudget(View Caller) {
-        showDialog();
-    }
-
-    private void showDialog() {
-
-        // AlertDialog.Builder object aanmaken
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-
-        //Input aanmaken
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
-        input.setHint("Budget");
-
-
-        //AlertDialog.Builder object Customizen
-        builder.setTitle("Change Budget")
-                .setView(input)
-                .setPositiveButton("OK", (dialogInterface, i) -> {
-                    String budget = input.getText().toString();
-                    lblBudgetAmount.setText(budget + " EUR");
-
-                    Toast.makeText(MainActivity.this,
-                            "You changed your budget to " + budget + " EUR",
-                            Toast.LENGTH_LONG).show();
-//                    setupHashmap();
-//                    setupPieChart();
-//                    PieDataSet b = (PieDataSet) pieChart.getData().getDataSet();
-//                    b.notifyDataSetChanged();
-//                    pieChart.getData().notifyDataChanged();
-//                    pieChart.notifyDataSetChanged();
-//                    pieChart.invalidate();
-                    postBudgetToDatabase(Integer.parseInt(budget));
-                })
-                .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
-
-        builder.show();
-    }
-
-    private void postBudgetToDatabase(int budget){
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        StringRequest submitRequest = new StringRequest(
-                Request.Method.POST,
-                POST_BUDGET_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                    }
-                },
-                new Response.ErrorListener(){
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(
-                                MainActivity.this,
-                                "Unable to communicate with the server" + error,
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-        )   { //NOTE THIS PART: here we are passing the POST parameters to the webservice
-            @Override
-            protected Map<String, String> getParams() {
-                /* Map<String, String> with key value pairs as data load */
-                Map<String, String> budgetMap = new HashMap<>();
-                budgetMap.put("userid", Integer.toString(userId));
-                budgetMap.put("month", Integer.toString(Calendar.getInstance().get(Calendar.MONTH)+1));
-                budgetMap.put("year", Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
-                budgetMap.put("budget", Integer.toString(budget));
-                return budgetMap;
-            }
-        };
-        requestQueue.add(submitRequest);
+//        showDialog();
+        Intent intent = new Intent(this, BudgetActivity.class);
+        intent.putExtra("userId", userId);
+        intent.putExtra("budget", budget);
+        intent.putParcelableArrayListExtra("expenses", expenses);
+        startActivity(intent);
     }
 
     public void setupBarChart() {
 
         initializeBarChartAppearance();
         setYAxisProperties();
-        //TODO: ook rekening houden mocht de user nog geen expenses hebben ingegeven in de database!!
         addDataToBarChart();
         setXAxisProperties();
         barChart.getAxisRight().setEnabled(false);
