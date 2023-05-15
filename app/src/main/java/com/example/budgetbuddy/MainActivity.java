@@ -40,6 +40,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
     private PieChart pieChart;
     private HashMap<String, Float> expCategoryToAmount;
+    private String[][] lastFourMonths;
 
     @Override
 
@@ -88,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
             requestBudget();
         }
         setupHashmap();
+        lastFourMonths = setupMonthsArray();
 
         setupBarChart();
         barChart.invalidate(); //refresh (tip: doen na aanpassen v/d data)
@@ -265,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
 
         //TODO: ook rekening houden mocht de user nog geen expenses hebben ingegeven in de database!!
         // bv in dat geval expensesMonthX = 0f
+    private String[][] setupMonthsArray() {
 
         String month1 = "February"; //aanpassen m.b.v. database
         String month2 = "March";
@@ -276,12 +281,26 @@ public class MainActivity extends AppCompatActivity {
         float expensesMonth3 = 2000f;
         float expensesMonth4 = 1550f;
 
+        String[][] array = {{month1,Float.toString(expensesMonth1)},
+                            {month2,Float.toString(expensesMonth2)},
+                            {month3,Float.toString(expensesMonth3)},
+                            {month4,Float.toString(expensesMonth4)}};
+        return array;
+
+    }
+
+    public void setupBarChart() {
+
+        initializeBarChartAppearance();
+        setYAxisProperties();
+        //TODO: ook rekening houden mocht de user nog geen expenses hebben ingegeven in de database!!
+        // bv in dat geval expensesMonthX = 0f
 
         ArrayList<BarEntry> expensesPerMonthEntries = new ArrayList<>();
-        expensesPerMonthEntries.add(new BarEntry(0f, expensesMonth1));
-        expensesPerMonthEntries.add(new BarEntry(1f, expensesMonth2));
-        expensesPerMonthEntries.add(new BarEntry(2f, expensesMonth3));
-        expensesPerMonthEntries.add(new BarEntry(3f, expensesMonth4));
+        expensesPerMonthEntries.add(new BarEntry(0f, Float.parseFloat(lastFourMonths[0][1])));
+        expensesPerMonthEntries.add(new BarEntry(1f, Float.parseFloat(lastFourMonths[1][1])));
+        expensesPerMonthEntries.add(new BarEntry(2f, Float.parseFloat(lastFourMonths[2][1])));
+        expensesPerMonthEntries.add(new BarEntry(3f, Float.parseFloat(lastFourMonths[3][1])));
 
         BarDataSet barDataSet = new BarDataSet(expensesPerMonthEntries, "Expenses last 4 months");
         barDataSet.setValueTextSize(12f);
@@ -294,29 +313,7 @@ public class MainActivity extends AppCompatActivity {
 
         barChart.setData(barData);
 
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
-        xAxis.setGranularity(1f);
-        xAxis.setLabelCount(4);
-        xAxis.setTypeface(Typeface.SANS_SERIF);
-        xAxis.setTextColor(Color.WHITE);
-        xAxis.setTextSize(10f);
-
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(new String[]
-                {month1, month2, month3, month4}));
-
-        YAxis leftAxis = barChart.getAxisLeft();
-        leftAxis.setDrawLabels(false);
-        leftAxis.setAxisLineColor(Color.TRANSPARENT);
-        // I make my y-axis invisble this way.
-        // Because when I disable my y-axis the bars are not to scale anymore.
-
-        leftAxis.setEnabled(true);
-        leftAxis.setValueFormatter(new LargeValueFormatter(" EUR"));
-        leftAxis.setDrawGridLines(false);
-        // leftAxis.setGranularity(500f);
-        leftAxis.setAxisMinimum(0f); // start from zero
+        setXAxisProperties();
 
 
         barChart.getAxisRight().setEnabled(false);
@@ -339,6 +336,42 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void initializeBarChartAppearance() {
+        barChart.getDescription().setEnabled(false);
+        barChart.setFitBars(true);
+        barChart.getLegend().setEnabled(false);
+        barChart.setNoDataText("You have not added any expenses yet");
+        barChart.setDoubleTapToZoomEnabled(false);
+        barChart.setPinchZoom(true);
+    }
+
+    private void setYAxisProperties() {
+        YAxis leftAxis = barChart.getAxisLeft();
+        leftAxis.setDrawLabels(false);
+        leftAxis.setAxisLineColor(Color.TRANSPARENT);
+        // makes Y-axis invisible - The y-axis doesn't get deleted because it changes proportions
+        leftAxis.setValueFormatter(new LargeValueFormatter(" EUR"));
+        leftAxis.setDrawGridLines(false);
+        // leftAxis.setGranularity(500f);
+        leftAxis.setAxisMinimum(0f); // start from zero
+    }
+
+    private void setXAxisProperties() {
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(1f);
+        xAxis.setLabelCount(4);
+        xAxis.setTypeface(Typeface.SANS_SERIF);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setTextSize(10f);
+
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(new String[]
+                {lastFourMonths[0][0], lastFourMonths[1][0], lastFourMonths[2][0], lastFourMonths[3][0]}));
+
+    }
+
+
     private void calculateUnused() {
         float sumOfExpensesAmounts = 0f;
 
@@ -358,7 +391,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupPieChart() {
         initializeChartAppearance();
-        addDataToChart();
+        addDataToPieChart();
     }
 
     private void initializeChartAppearance() {
@@ -374,7 +407,7 @@ public class MainActivity extends AppCompatActivity {
         pieChart.setMarker(mv);
     }
 
-    private void addDataToChart() {
+    private void addDataToPieChart() {
         ArrayList<PieEntry> expensesPerCategory = new ArrayList<>();
         for (Map.Entry<String, Float> entry : expCategoryToAmount.entrySet()) {
             expensesPerCategory.add(new PieEntry(entry.getValue(), entry.getKey()));
@@ -415,4 +448,4 @@ public class MainActivity extends AppCompatActivity {
         return customColors;
     }
 
-    }
+}
