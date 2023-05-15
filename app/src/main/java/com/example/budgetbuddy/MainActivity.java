@@ -256,19 +256,6 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(submitRequest);
     }
 
-    public void setupBarChart() {
-
-        barChart.getDescription().setEnabled(false);
-        barChart.setFitBars(true);
-        //barChart.setDrawValueAboveBar(false);
-        barChart.getLegend().setEnabled(false);
-        barChart.setNoDataText("You have not added any expenses yet");
-        barChart.setDoubleTapToZoomEnabled(false);
-        barChart.setPinchZoom(true); //TODO: testen op Android gsm
-
-
-        //TODO: ook rekening houden mocht de user nog geen expenses hebben ingegeven in de database!!
-        // bv in dat geval expensesMonthX = 0f
     private String[][] setupMonthsArray() {
 
         String month1 = "February"; //aanpassen m.b.v. database
