@@ -48,9 +48,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String QUEUE_URL = "https://studev.groept.be/api/a22pt403/getAllExpensesFromUser/";
     private static final String POST_BUDGET_URL = "https://studev.groept.be/api/a22pt403/insertUpdateBudget/";
-    private static final String GET_BUDGET_URL = "https://studev.groept.be/api/a22pt403/getBudget/";
     private TextView lblBudgetAmount;
     private TextView lblCurrentExpensesAmount;
     private ArrayList<Expense> expenses;
@@ -79,20 +77,13 @@ public class MainActivity extends AppCompatActivity {
         expenses = new ArrayList<Expense>();
         Intent intent = getIntent();
         userId = intent.getIntExtra("userId",1);
-        if(intent.getParcelableArrayListExtra("expenses") != null){
-            expenses = intent.getParcelableArrayListExtra("expenses");
-            budget = intent.getFloatExtra("budget",0);
-            lblBudgetAmount.setText(budget + " EUR");
-            currentExpenses = getExpensesByMonthAndYear(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
-            lblCurrentExpensesAmount.setText(currentExpenses + " EUR");
-            setupVisuals();
+        expenses = intent.getParcelableArrayListExtra("expenses");
+        budget = intent.getFloatExtra("budget",0);
+        lblBudgetAmount.setText(budget + " EUR");
+        currentExpenses = getExpensesByMonthAndYear(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
+        lblCurrentExpensesAmount.setText(currentExpenses + " EUR");
+        setupVisuals();
         }
-        else{
-            requestExpenseListQueue();
-            requestBudget();
-        }
-
-    }
 
     private void setupVisuals(){
         setupHashmap();
@@ -103,77 +94,6 @@ public class MainActivity extends AppCompatActivity {
 
         setupPieChart();
         pieChart.invalidate();
-    }
-
-    private void requestExpenseListQueue() {
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        JsonArrayRequest queueRequest = new JsonArrayRequest(
-                Request.Method.GET,
-                QUEUE_URL + userId,
-                null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        processJSONResponse(response);
-                        currentExpenses = getExpensesByMonthAndYear(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
-                        lblCurrentExpensesAmount.setText(currentExpenses + " EUR");
-                        setupVisuals();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(
-                                MainActivity.this,
-                                "Unable to communicate with the server",
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-        requestQueue.add(queueRequest);
-    }
-
-    private void processJSONResponse(JSONArray response) {
-        for (int i = 0; i < response.length(); i++) {
-            try {
-                Expense expense = new Expense(response.getJSONObject(i));
-                expenses.add(expense);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void requestBudget(){
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        JsonArrayRequest queueRequest = new JsonArrayRequest(
-                Request.Method.GET,
-                GET_BUDGET_URL + userId,
-                null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            budget = (float) response.getJSONObject(0).getDouble("budget");
-                            lblBudgetAmount.setText(budget + " EUR");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(
-                                MainActivity.this,
-                                "Unable to communicate with the server",
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-        requestQueue.add(queueRequest);
     }
 
     private float getExpensesByMonthAndYear(int monthToMatch, int yearToMatch){
@@ -371,9 +291,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void calculateUnused() {
-        float sumOfExpensesAmounts = getExpensesByMonthAndYear(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
-        if(budget > sumOfExpensesAmounts){
-            expCategoryToAmount.put("Unused", budget - sumOfExpensesAmounts);
+        if(budget > currentExpenses){
+            expCategoryToAmount.put("Unused", budget - currentExpenses);
         }
 
     }

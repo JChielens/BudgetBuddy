@@ -14,6 +14,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.budgetbuddy.backendLogic.Expense;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,12 +23,18 @@ import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity {
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private EditText userField;
     private EditText passField;
+    private ArrayList<Expense> expenses;
+    private float budget;
     private static final String POST_URL = "https://studev.groept.be/api/a22pt403/getHashedPasswordFromUsername/";
+    private static final String QUEUE_URL = "https://studev.groept.be/api/a22pt403/getAllExpensesFromUser/";
+    private static final String GET_BUDGET_URL = "https://studev.groept.be/api/a22pt403/getBudget/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         userField = (EditText) findViewById(R.id.usernameField);
         passField = (EditText) findViewById(R.id.passwordField1);
+        expenses = new ArrayList<>();
     }
 
     public void onRegisterButton_Clicked(View caller){
@@ -81,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                                 JSONObject user = response.getJSONObject(0);
                                 String hashDatabase = user.getString("password");
                                 if(hashDatabase.equals(hash)){
-                                    goToMain(user.getInt("id"));
+                                    getExpenses(user.getInt("id"));
                                 }
                                 else {
                                     Toast.makeText(
@@ -112,6 +120,77 @@ public class LoginActivity extends AppCompatActivity {
     private void goToMain(int userId){
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("userId", userId);
+        intent.putExtra("budget", budget);
+        intent.putParcelableArrayListExtra("expenses", expenses);
         startActivity(intent);
+    }
+
+    private void getBudget(int userId){
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        JsonArrayRequest queueRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                GET_BUDGET_URL + userId,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            budget = (float) response.getJSONObject(0).getDouble("budget");
+                            goToMain(userId);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                LoginActivity.this,
+                                "Unable to communicate with the server",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
+        requestQueue.add(queueRequest);
+    }
+
+    private void getExpenses(int userId){
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        JsonArrayRequest queueRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                QUEUE_URL + userId,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        processJSONResponse(response);
+                        getBudget(userId);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                LoginActivity.this,
+                                "Unable to communicate with the server",
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
+        requestQueue.add(queueRequest);
+    }
+
+    private void processJSONResponse(JSONArray response) {
+        for (int i = 0; i < response.length(); i++) {
+            try {
+                Expense expense = new Expense(response.getJSONObject(i));
+                expenses.add(expense);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
