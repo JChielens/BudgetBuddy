@@ -97,7 +97,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         OptionalInt highestIndex = expenses.stream()
                 .mapToInt(Expense::getExpenseId)
                 .max();
-        Expense expense = new Expense((highestIndex.isPresent()) ? highestIndex.getAsInt() : 1,
+        Expense expense = new Expense((highestIndex.isPresent()) ? highestIndex.getAsInt() + 1 : 1,
                 userId, Float.parseFloat(txtAmount.getText().toString().trim()),
                 lblSelectedDate.getText().toString().trim(), txtPlace.getText().toString().trim(),
                 txtDescription.getText().toString().trim(), categorySpinner.getSelectedItem().toString().trim());
