@@ -81,8 +81,8 @@ public class LoginActivity extends AppCompatActivity {
     private void loginUser(String hashedPassword){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         JsonArrayRequest queueRequest = new JsonArrayRequest(
-                Request.Method.POST,
-                LOGIN_URL,
+                Request.Method.GET,
+                LOGIN_URL + userField.getText().toString().trim() + "/" + LocalDate.now().getMonthValue() + "/" + LocalDate.now().getYear(),
                 null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -90,7 +90,20 @@ public class LoginActivity extends AppCompatActivity {
                         if(response.length() == 1){
                             try {
                                 JSONObject user = response.getJSONObject(0);
-                                checkLogin(user, hashedPassword);
+                                //checkLogin(user, hashedPassword);
+                                String hashDatabase = user.getString("password");
+                                if(hashDatabase.equals(hashedPassword) &&
+                                        user.getString("username").equals(userField.getText().toString().trim())){
+                                    budget = (float) user.getDouble("budget");
+                                    userId = user.getInt("id");
+                                    getExpenses();
+                                }
+                                else {
+                                    Toast.makeText(
+                                            LoginActivity.this,
+                                            "Password incorrect",
+                                            Toast.LENGTH_LONG).show();
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -106,17 +119,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                     }
                 }
-        ){ //NOTE THIS PART: here we are passing the POST parameters to the webservice
-            @Override
-            protected Map<String, String> getParams() {
-                /* Map<String, String> with key value pairs as data load */
-                Map<String, String> loginMap = new HashMap<>();
-                loginMap.put("username", userField.getText().toString().trim());
-                loginMap.put("month", Integer.toString(LocalDate.now().getMonthValue()));
-                loginMap.put("year", Integer.toString(LocalDate.now().getYear()));
-                return loginMap;
-            }
-        };
+        );
         requestQueue.add(queueRequest);
     }
 
