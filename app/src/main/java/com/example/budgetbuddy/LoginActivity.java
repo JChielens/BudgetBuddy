@@ -25,15 +25,18 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private EditText userField;
     private EditText passField;
     private ArrayList<Expense> expenses;
+    private int userId;
     private float budget;
-    private static final String POST_URL = "https://studev.groept.be/api/a22pt403/getHashedPasswordFromUsername/";
-    private static final String QUEUE_URL = "https://studev.groept.be/api/a22pt403/getAllExpensesFromUser/";
+    private static final String LOGIN_URL = "https://studev.groept.be/api/a22pt403/getUserInfo/";
+    private static final String EXPENSES_URL = "https://studev.groept.be/api/a22pt403/getAllExpensesFromUser/";
     private static final String GET_BUDGET_URL = "https://studev.groept.be/api/a22pt403/getBudget/";
 
     @Override
@@ -52,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginButton_Clicked(View caller){
         String hash = hashPassword(passField.getText().toString().trim());
-        checkIfPasswordCorrect(hash);
+        loginUser(hash);
     }
 
     private String hashPassword(String password){
@@ -75,11 +78,11 @@ public class LoginActivity extends AppCompatActivity {
         return new String(hexChars);
     }
 
-    private void checkIfPasswordCorrect(String hash){
+    private void loginUser(String hashedPassword){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         JsonArrayRequest queueRequest = new JsonArrayRequest(
-                Request.Method.GET,
-                POST_URL + userField.getText().toString().trim(),
+                Request.Method.POST,
+                LOGIN_URL,
                 null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -87,20 +90,10 @@ public class LoginActivity extends AppCompatActivity {
                         if(response.length() == 1){
                             try {
                                 JSONObject user = response.getJSONObject(0);
-                                String hashDatabase = user.getString("password");
-                                if(hashDatabase.equals(hash)){
-                                    getExpenses(user.getInt("id"));
-                                }
-                                else {
-                                    Toast.makeText(
-                                            LoginActivity.this,
-                                            "Password incorrect",
-                                            Toast.LENGTH_LONG).show();
-                                }
+                                checkLogin(user, hashedPassword);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
                         }
                     }
                 },
@@ -113,11 +106,41 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                     }
                 }
-        );
+        ){ //NOTE THIS PART: here we are passing the POST parameters to the webservice
+            @Override
+            protected Map<String, String> getParams() {
+                /* Map<String, String> with key value pairs as data load */
+                Map<String, String> loginMap = new HashMap<>();
+                loginMap.put("username", userField.getText().toString().trim());
+                loginMap.put("month", Integer.toString(LocalDate.now().getMonthValue()));
+                loginMap.put("year", Integer.toString(LocalDate.now().getYear()));
+                return loginMap;
+            }
+        };
         requestQueue.add(queueRequest);
     }
 
-    private void goToMain(int userId){
+    private void checkLogin(JSONObject user, String hashedPassword){
+        try {
+            String hashDatabase = user.getString("password");
+            if(hashDatabase.equals(hashedPassword) &&
+                    user.getString("username").equals(userField.getText().toString().trim())){
+                budget = (float) user.getDouble("budget");
+                userId = user.getInt("id");
+                getExpenses();
+            }
+            else {
+                Toast.makeText(
+                        LoginActivity.this,
+                        "Password incorrect",
+                        Toast.LENGTH_LONG).show();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void goToMain(){
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("userId", userId);
         intent.putExtra("budget", budget);
@@ -125,49 +148,50 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void getBudget(int userId){
+//    private void getBudget(int userId){
+//        RequestQueue requestQueue = Volley.newRequestQueue(this);
+//
+//        JsonArrayRequest queueRequest = new JsonArrayRequest(
+//                Request.Method.GET,
+//                GET_BUDGET_URL + userId,
+//                null,
+//                new Response.Listener<JSONArray>() {
+//                    @Override
+//                    public void onResponse(JSONArray response) {
+//                        try {
+//                            budget = (float) response.getJSONObject(0).getDouble("budget");
+//                            goToMain();
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Toast.makeText(
+//                                LoginActivity.this,
+//                                "Unable to communicate with the server",
+//                                Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//        );
+//        requestQueue.add(queueRequest);
+//    }
+
+    private void getExpenses(){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         JsonArrayRequest queueRequest = new JsonArrayRequest(
                 Request.Method.GET,
-                GET_BUDGET_URL + userId,
-                null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            budget = (float) response.getJSONObject(0).getDouble("budget");
-                            goToMain(userId);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(
-                                LoginActivity.this,
-                                "Unable to communicate with the server",
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-        requestQueue.add(queueRequest);
-    }
-
-    private void getExpenses(int userId){
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        JsonArrayRequest queueRequest = new JsonArrayRequest(
-                Request.Method.GET,
-                QUEUE_URL + userId,
+                EXPENSES_URL + userId,
                 null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         processJSONResponse(response);
-                        getBudget(userId);
+                        goToMain();
+                        //getBudget(userId);
                     }
                 },
                 new Response.ErrorListener() {
