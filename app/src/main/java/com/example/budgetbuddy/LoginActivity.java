@@ -90,20 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                         if(response.length() == 1){
                             try {
                                 JSONObject user = response.getJSONObject(0);
-                                //checkLogin(user, hashedPassword);
-                                String hashDatabase = user.getString("password");
-                                if(hashDatabase.equals(hashedPassword) &&
-                                        user.getString("username").equals(userField.getText().toString().trim())){
-                                    budget = (float) user.getDouble("budget");
-                                    userId = user.getInt("id");
-                                    getExpenses();
-                                }
-                                else {
-                                    Toast.makeText(
-                                            LoginActivity.this,
-                                            "Password incorrect",
-                                            Toast.LENGTH_LONG).show();
-                                }
+                                checkLogin(user, hashedPassword);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -151,37 +138,6 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-//    private void getBudget(int userId){
-//        RequestQueue requestQueue = Volley.newRequestQueue(this);
-//
-//        JsonArrayRequest queueRequest = new JsonArrayRequest(
-//                Request.Method.GET,
-//                GET_BUDGET_URL + userId,
-//                null,
-//                new Response.Listener<JSONArray>() {
-//                    @Override
-//                    public void onResponse(JSONArray response) {
-//                        try {
-//                            budget = (float) response.getJSONObject(0).getDouble("budget");
-//                            goToMain();
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Toast.makeText(
-//                                LoginActivity.this,
-//                                "Unable to communicate with the server",
-//                                Toast.LENGTH_LONG).show();
-//                    }
-//                }
-//        );
-//        requestQueue.add(queueRequest);
-//    }
-
     private void getExpenses(){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
@@ -194,7 +150,6 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(JSONArray response) {
                         processJSONResponse(response);
                         goToMain();
-                        //getBudget(userId);
                     }
                 },
                 new Response.ErrorListener() {
