@@ -48,7 +48,9 @@ public class RegisterActivity extends AppCompatActivity {
         String email = emailField.getText().toString();
         String username = userField.getText().toString();
         String regex = "^[a-zA-Z0-9_!#$%&'*+\\=?`{|}~^.-]+@[a-zA-Z0-9]+[.][a-zA-Z0-9]{2,4}$";
+        String new_regex = "^[a-zA-Z0-9_!#$%&'*+\\=?`{|}~^.-]{1,64}@[a-zA-Z0-9-]{1,200}([.][a-zA-Z0-9-]{1,52})?([.][a-zA-Z0-9-]{2,4})?[.][a-zA-Z0-9]{2,4}$";
         if(email.matches(regex)){
+        //if(email.matches(new_regex)){
             checkIfUsernameExists(username);
             //registerUser();
         }
