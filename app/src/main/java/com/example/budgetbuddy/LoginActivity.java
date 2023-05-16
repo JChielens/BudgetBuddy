@@ -31,15 +31,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String LOGIN_URL = "https://studev.groept.be/api/a22pt403/getUserInfo/";
+    private static final String EXPENSES_URL = "https://studev.groept.be/api/a22pt403/getAllExpensesFromUser/";
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     private TextInputEditText userField;
     private TextInputEditText passField;
     private ArrayList<Expense> expenses;
     private int userId;
     private float budget;
-    private static final String LOGIN_URL = "https://studev.groept.be/api/a22pt403/getUserInfo/";
-    private static final String EXPENSES_URL = "https://studev.groept.be/api/a22pt403/getAllExpensesFromUser/";
-    private static final String GET_BUDGET_URL = "https://studev.groept.be/api/a22pt403/getBudget/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +96,12 @@ public class LoginActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
+                        else{
+                            Toast.makeText(
+                                    LoginActivity.this,
+                                    "Username unknown",
+                                    Toast.LENGTH_LONG).show();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -142,7 +147,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void getExpenses(){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-
         JsonArrayRequest queueRequest = new JsonArrayRequest(
                 Request.Method.GET,
                 EXPENSES_URL + userId,
