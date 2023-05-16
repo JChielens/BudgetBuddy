@@ -29,6 +29,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.OptionalInt;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class AddExpenseActivity extends AppCompatActivity {
     private static final String POST_URL = "https://studev.groept.be/api/a22pt403/addRow/";
@@ -47,16 +50,18 @@ public class AddExpenseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_expense);
+
         txtDescription = findViewById(R.id.txtDescription);
         txtAmount = findViewById(R.id.txtAmount);
         categorySpinner = findViewById(R.id.spinner);
         txtPlace = findViewById(R.id.txtPlace);
         txtDate = findViewById(R.id.lblSelectedDate);
+        lblSelectedDate = findViewById(R.id.lblSelectedDate);
+
         Intent intent = getIntent();
         expenses = intent.getParcelableArrayListExtra("expenses");
         userId = intent.getIntExtra("userId", 1);
         budget = intent.getFloatExtra("budget", 0);
-        lblSelectedDate = findViewById(R.id.lblSelectedDate);
     }
 
     public void onlblSelectedDate(View Caller) {
@@ -68,8 +73,7 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth)
-            {
+            public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
                 monthOfYear++;
                 // want alle zaken van Calender class starten maand op index 0
                 if (monthOfYear >= 10 && dayOfMonth >= 10) {
@@ -86,15 +90,17 @@ public class AddExpenseActivity extends AppCompatActivity {
                 }
             }
         }, year, month, day);
-
         datePickerDialog.show();
-
     }
 
     public void onBtnSubmit_Clicked(View Caller){
-        Expense expense = new Expense(userId, Float.parseFloat(txtAmount.getText().toString()),
-                lblSelectedDate.getText().toString(), txtPlace.getText().toString(),
-                txtDescription.getText().toString(), categorySpinner.getSelectedItem().toString());
+        OptionalInt highestIndex = expenses.stream()
+                .mapToInt(Expense::getExpenseId)
+                .max();
+        Expense expense = new Expense((highestIndex.isPresent()) ? highestIndex.getAsInt() : 1,
+                userId, Float.parseFloat(txtAmount.getText().toString().trim()),
+                lblSelectedDate.getText().toString().trim(), txtPlace.getText().toString().trim(),
+                txtDescription.getText().toString().trim(), categorySpinner.getSelectedItem().toString().trim());
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest submitRequest = new StringRequest(
@@ -127,7 +133,6 @@ public class AddExpenseActivity extends AppCompatActivity {
 
     private void getIndex(Expense e){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-
         JsonArrayRequest queueRequest = new JsonArrayRequest(
                 Request.Method.GET,
                 ID_URL,
@@ -138,13 +143,8 @@ public class AddExpenseActivity extends AppCompatActivity {
                         try {
                             e.addId(response.getJSONObject(0).getInt("id"));
                             expenses.add(e);
-                            Collections.sort(expenses, new Comparator<Expense>() {
-                                public int compare(Expense o1, Expense o2) {
-                                    return o1.getDate().compareTo(o2.getDate());
-                                }
-                            });
+                            expenses.sort((c1,c2) -> c1.getDate().compareTo(c2.getDate()));
                             goToExpenseView();
-
                         } catch (JSONException ex) {
                             ex.printStackTrace();
                         }

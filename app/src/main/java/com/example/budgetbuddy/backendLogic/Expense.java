@@ -33,16 +33,6 @@ public class Expense implements Parcelable {
         }
     };
 
-//    public Expense(int userId, float amount, String date, String place, String description, String category) {
-//        this.userId = userId;
-//        this.amount = amount;
-//        this.date = date;
-//        this.place = place;
-//        this.description = description;
-//        this.category = category;
-//        checked = false;
-//    }
-
     public Expense(int expenseId, int userId, float amount, String date, String place, String description, String category) {
         this.expenseId = expenseId;
         this.userId = userId;
@@ -101,6 +91,7 @@ public class Expense implements Parcelable {
     public Map<String, String> getPostParameters() {
         Map<String, String> params = new HashMap<>();
         params.put("userid", Integer.toString(userId));
+        params.put("expenseid", Integer.toString(expenseId));
         params.put("date", date);
         params.put("category", category);
         params.put("place", place);
