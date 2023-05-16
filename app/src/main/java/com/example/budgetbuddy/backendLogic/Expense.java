@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Expense implements Parcelable {
-    private int id;
+    private int expenseId;
     private int userId;
     private float amount;
     private String date;
@@ -33,18 +33,18 @@ public class Expense implements Parcelable {
         }
     };
 
-    public Expense(int userId, float amount, String date, String place, String description, String category) {
-        this.userId = userId;
-        this.amount = amount;
-        this.date = date;
-        this.place = place;
-        this.description = description;
-        this.category = category;
-        checked = false;
-    }
+//    public Expense(int userId, float amount, String date, String place, String description, String category) {
+//        this.userId = userId;
+//        this.amount = amount;
+//        this.date = date;
+//        this.place = place;
+//        this.description = description;
+//        this.category = category;
+//        checked = false;
+//    }
 
-    public Expense(int id, int userId, float amount, String date, String place, String description, String category) {
-        this.id = id;
+    public Expense(int expenseId, int userId, float amount, String date, String place, String description, String category) {
+        this.expenseId = expenseId;
         this.userId = userId;
         this.amount = amount;
         this.date = date;
@@ -56,7 +56,7 @@ public class Expense implements Parcelable {
 
     public Expense(JSONObject o){
         try{
-            id = o.getInt("id");
+            expenseId = o.getInt("expenseId");
             userId = o.getInt("userId");
             amount = (float) o.getDouble("amount");
             date = o.getString("date");
@@ -89,7 +89,7 @@ public class Expense implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel parcel, int i) {
-        parcel.writeInt(id);
+        parcel.writeInt(expenseId);
         parcel.writeInt(userId);
         parcel.writeFloat(amount);
         parcel.writeString(date);
@@ -110,11 +110,11 @@ public class Expense implements Parcelable {
     }
 
     public void addId(int id){
-        this.id = id;
+        this.expenseId = id;
     }
 
-    public int getId(){
-        return id;
+    public int getExpenseId(){
+        return expenseId;
     }
 
     public int getUserId() {

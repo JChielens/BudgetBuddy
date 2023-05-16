@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -18,7 +17,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.budgetbuddy.backendLogic.Expense;
-import com.example.budgetbuddy.backendLogic.ExpenseAdapter;
 import com.example.budgetbuddy.backendLogic.RemoveExpenseAdapter;
 
 import java.util.ArrayList;
@@ -88,7 +86,7 @@ public class RemoveExpensesActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String,String> idMap = new HashMap<>();
-                idMap.put("id", Integer.toString(e.getId()));
+                idMap.put("id", Integer.toString(e.getExpenseId()));
                 return idMap;
             }
         };
