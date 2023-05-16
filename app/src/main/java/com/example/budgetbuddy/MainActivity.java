@@ -50,13 +50,14 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     private TextView lblBudgetAmount;
     private TextView lblCurrentExpensesAmount;
+
     private ArrayList<Expense> expenses;
     private int userId;
     private float budget;
     private float currentExpenses;
-    //BarChart variables:
-    private BarChart barChart;
 
+    //Chart variables:
+    private BarChart barChart;
     private PieChart pieChart;
     private HashMap<String, Float> expCategoryToAmount;
     private String[][] lastFourMonths;
@@ -74,12 +75,14 @@ public class MainActivity extends AppCompatActivity {
         currentExpenses = 0;
         expCategoryToAmount = new HashMap<String, Float>();
         expenses = new ArrayList<Expense>();
+
         Intent intent = getIntent();
         userId = intent.getIntExtra("userId",1);
         expenses = intent.getParcelableArrayListExtra("expenses");
         budget = intent.getFloatExtra("budget",0);
-        lblBudgetAmount.setText(budget + " EUR");
         currentExpenses = getExpensesByMonthAndYear(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
+
+        lblBudgetAmount.setText(budget + " EUR");
         lblCurrentExpensesAmount.setText(currentExpenses + " EUR");
         setupVisuals();
         }
@@ -96,15 +99,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private float getExpensesByMonthAndYear(int monthToMatch, int yearToMatch){
-        int total = 0;
-        for(Expense e : expenses){
-            int month = Integer.parseInt(e.getDate().substring(5,7));
-            int year = Integer.parseInt(e.getDate().substring(0,4));
-            if(month == monthToMatch && year == yearToMatch){
-                total += e.getAmount();
-            }
-        }
-        return total;
+        return (float) expenses.stream()
+                .filter(e -> e.getDate().startsWith(yearToMatch + "-" + ((monthToMatch >= 10) ? monthToMatch : "0" + monthToMatch)))
+                .mapToDouble(Expense::getAmount)
+                .sum();
     }
 
     public void onBtnExpenses(View Caller) {
@@ -116,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onBtnBudget(View Caller) {
-//        showDialog();
         Intent intent = new Intent(this, BudgetActivity.class);
         intent.putExtra("userId", userId);
         intent.putExtra("budget", budget);
@@ -125,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setupBarChart() {
-
         initializeBarChartAppearance();
         setYAxisProperties();
         addDataToBarChart();
@@ -145,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
                 array[i][0] = Month.of(now.getMonthValue() - i + 12).name().toLowerCase();
                 array[i][1] = Float.toString(getExpensesByMonthAndYear(now.getMonthValue() - i + 12, LocalDate.now().getYear()) - 1);
             }
-
         }
         return array;
 
@@ -184,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         calculateUnused();
-
     }
 
     private void initializeBarChartAppearance() {
@@ -216,7 +210,6 @@ public class MainActivity extends AppCompatActivity {
         xAxis.setTypeface(Typeface.SANS_SERIF);
         xAxis.setTextColor(Color.WHITE);
         xAxis.setTextSize(10f);
-
         xAxis.setValueFormatter(new IndexAxisValueFormatter(new String[]
                 {lastFourMonths[3][0], lastFourMonths[2][0], lastFourMonths[1][0], lastFourMonths[0][0]}));
 
@@ -227,7 +220,6 @@ public class MainActivity extends AppCompatActivity {
         if(budget > currentExpenses){
             expCategoryToAmount.put("Unused", budget - currentExpenses);
         }
-
     }
 
     private void setupPieChart() {
@@ -288,5 +280,4 @@ public class MainActivity extends AppCompatActivity {
 
         return customColors;
     }
-
 }
