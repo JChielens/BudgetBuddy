@@ -121,6 +121,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void onBtnLogout_Clicked(View caller) {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
+
     public void setupBarChart() {
         initializeBarChartAppearance();
         setYAxisProperties();
