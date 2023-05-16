@@ -154,7 +154,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void onLoginButton_Clicked(View caller) {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+        toLogin();
     }
 }
