@@ -144,4 +144,8 @@ public class AddExpenseActivity extends AppCompatActivity {
         intent.putParcelableArrayListExtra("expenses", expenses);
         startActivity(intent);
     }
+
+    public void onBackButton_clicked(View caller) {
+        goToExpenseView();
+    }
 }

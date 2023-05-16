@@ -58,7 +58,14 @@ public class RemoveExpensesActivity extends AppCompatActivity {
                 it.remove();
             }
         }
+        goToExpenseOverview();
+    }
 
+    public void onBtnBack_Clicked(View caller) {
+        goToExpenseOverview();
+    }
+
+    private void goToExpenseOverview(){
         Intent intent = new Intent(this, ExpensesViewActivity.class);
         intent.putParcelableArrayListExtra("expenses", expenses);
         intent.putExtra("userId", userId);
