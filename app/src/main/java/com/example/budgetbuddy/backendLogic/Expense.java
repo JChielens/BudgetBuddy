@@ -100,10 +100,6 @@ public class Expense implements Parcelable {
         return params;
     }
 
-    public void addId(int id){
-        this.expenseId = id;
-    }
-
     public int getExpenseId(){
         return expenseId;
     }
@@ -132,12 +128,8 @@ public class Expense implements Parcelable {
         return category;
     }
 
-    public void setChecked(){
-        checked = true;
-    }
-
-    public void setUnchecked(){
-        checked = false;
+    public void setChecked(boolean b){
+        checked = b;
     }
 
     public boolean isChecked(){

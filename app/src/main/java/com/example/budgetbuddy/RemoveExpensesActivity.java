@@ -36,12 +36,15 @@ public class RemoveExpensesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remove_expenses);
+
         expenseList = findViewById(R.id.expenseRemoveQueueView);
         expenseList.setLayoutManager( new LinearLayoutManager(this));
+
         Intent intent = getIntent();
         expenses = intent.getParcelableArrayListExtra("expenses");
         userId = intent.getIntExtra("userId", 1);
         budget = intent.getFloatExtra("budget", 0);
+
         RemoveExpenseAdapter adapter = new RemoveExpenseAdapter(expenses);
         expenseList.setAdapter(adapter);
     }
@@ -66,8 +69,8 @@ public class RemoveExpensesActivity extends AppCompatActivity {
     private void removeExpenseFromDatabase(Expense e){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest submitRequest = new StringRequest(
-                Request.Method.POST,
-                POST_URL,
+                Request.Method.GET,
+                POST_URL + e.getExpenseId() + "/" + userId,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -82,14 +85,7 @@ public class RemoveExpensesActivity extends AppCompatActivity {
                                 Toast.LENGTH_LONG).show();
                     }
                 }
-        )   { //NOTE THIS PART: here we are passing the POST parameters to the webservice
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String,String> idMap = new HashMap<>();
-                idMap.put("id", Integer.toString(e.getExpenseId()));
-                return idMap;
-            }
-        };
+        );
         requestQueue.add(submitRequest);
     }
 }

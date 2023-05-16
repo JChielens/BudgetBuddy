@@ -27,13 +27,12 @@ public class RemoveExpenseAdapter extends RecyclerView.Adapter<RemoveExpenseAdap
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View orderView = layoutInflater.inflate(R.layout.expense_info_remove, parent, false);
         ViewHolder myViewHolder = new ViewHolder(orderView);
-        myViewHolder.addCheckBox(myViewHolder.order.findViewById(R.id.removeCheckBox));
         return myViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position){
-        Expense expense = expenseList.get(position);
+    public void onBindViewHolder(ViewHolder holder, final int position){
+        final Expense expense = expenseList.get(position);
         ((TextView) holder.order.findViewById(R.id.date)).setText("Date: " + expense.getDate());
         ((TextView) holder.order.findViewById(R.id.category)).setText("Category: " + expense.getCategory());
         ((TextView) holder.order.findViewById(R.id.place)).setText("Place: " + expense.getPlace());
@@ -44,16 +43,13 @@ public class RemoveExpenseAdapter extends RecyclerView.Adapter<RemoveExpenseAdap
         else{
             ((TextView) holder.order.findViewById(R.id.description)).setText("Description: " + expense.getDescription());
         }
-        CheckBox checkBox = holder.getChecked();
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.checkBox.setOnCheckedChangeListener(null);
+        holder.checkBox.setChecked(expense.isChecked());
+
+        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(checkBox.isChecked()){
-                    expense.setChecked();
-                }
-                else{
-                    expense.setUnchecked();
-                }
+                expense.setChecked(b);
             }
         });
     }
@@ -65,19 +61,12 @@ public class RemoveExpenseAdapter extends RecyclerView.Adapter<RemoveExpenseAdap
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         public View order;
-        private CheckBox checked;
+        public CheckBox checkBox;
 
-        public ViewHolder(View coffeeOrderView){
-            super(coffeeOrderView);
-            order = (View) coffeeOrderView;
-        }
-
-        public void addCheckBox(CheckBox cb){
-            checked = cb;
-        }
-
-        public CheckBox getChecked(){
-            return checked;
+        public ViewHolder(View view){
+            super(view);
+            order = (View) view;
+            checkBox = (CheckBox) view.findViewById(R.id.removeCheckBox);
         }
     }
 

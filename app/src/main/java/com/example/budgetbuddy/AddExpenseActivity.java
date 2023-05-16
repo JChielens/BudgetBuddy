@@ -102,25 +102,31 @@ public class AddExpenseActivity extends AppCompatActivity {
                 lblSelectedDate.getText().toString().trim(), txtPlace.getText().toString().trim(),
                 txtDescription.getText().toString().trim(), categorySpinner.getSelectedItem().toString().trim());
 
+        expenses.add(expense);
+        expenses.sort((c1,c2) -> c1.getDate().compareTo(c2.getDate()));
+        postExpense(expense);
+        goToExpenseView();
+    }
+
+    private void postExpense(Expense expense){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         StringRequest submitRequest = new StringRequest(
-            Request.Method.POST,
-            POST_URL,
-            new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    getIndex(expense);
+                Request.Method.POST,
+                POST_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                AddExpenseActivity.this,
+                                "Unable to post the expense" + error,
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
-            },
-            new Response.ErrorListener(){
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(
-                            AddExpenseActivity.this,
-                            "Unable to post the expense" + error,
-                            Toast.LENGTH_LONG).show();
-                }
-            }
         )   { //NOTE THIS PART: here we are passing the POST parameters to the webservice
             @Override
             protected Map<String, String> getParams() {
@@ -129,38 +135,6 @@ public class AddExpenseActivity extends AppCompatActivity {
             }
         };
         requestQueue.add(submitRequest);
-    }
-
-    private void getIndex(Expense e){
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        JsonArrayRequest queueRequest = new JsonArrayRequest(
-                Request.Method.GET,
-                ID_URL,
-                null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            e.addId(response.getJSONObject(0).getInt("id"));
-                            expenses.add(e);
-                            expenses.sort((c1,c2) -> c1.getDate().compareTo(c2.getDate()));
-                            goToExpenseView();
-                        } catch (JSONException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(
-                                AddExpenseActivity.this,
-                                "Unable to communicate with the server",
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-        requestQueue.add(queueRequest);
     }
 
     private void goToExpenseView(){
