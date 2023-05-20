@@ -38,9 +38,9 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        userField = (EditText) findViewById(R.id.usernameField);
-        passField = (EditText) findViewById(R.id.passwordField1);
-        emailField = (EditText) findViewById((R.id.emailField));
+        userField = (EditText) findViewById(R.id.inputUsernameFieldRegister);
+        passField = (EditText) findViewById(R.id.inputPasswordFieldRegister);
+        emailField = (EditText) findViewById((R.id.inputEmailField));
     }
 
     public void onRegisterButton_Clicked(View caller){

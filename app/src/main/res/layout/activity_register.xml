@@ -13,7 +13,8 @@
         android:layout_marginTop="140dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:text="REGISTER"
+        android:text="@string/register"
+        android:textAllCaps="true"
         android:textAlignment="center"
         android:fontFamily="@font/roboto_condensed_bold"
         android:textSize="30sp"
@@ -21,19 +22,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <EditText
-        android:id="@+id/usernameField"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/usernameFieldRegister"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:hint="Username"
+        android:hint="@string/username"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/registerText" />
+        app:layout_constraintTop_toBottomOf="@id/registerText">
 
-    <EditText
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputUsernameFieldRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/emailField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -43,19 +51,40 @@
         android:hint="Email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/usernameField" />
+        app:layout_constraintTop_toBottomOf="@id/usernameFieldRegister">
 
-    <EditText
-        android:id="@+id/passwordField1"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputEmailField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordFieldRegister"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:hint="Password"
+        android:hint="@string/password"
+        app:endIconMode="password_toggle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/emailField" />
+        android:inputType="textPassword"
+        app:layout_constraintTop_toBottomOf="@id/emailField">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputPasswordFieldRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 <!--    <EditText
         android:id="@+id/passwordField2"
         android:layout_width="200dp"
@@ -64,7 +93,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:hint="Repeat password"
-        app:layout_constraintTop_toBottomOf="@id/passwordField1"
+        app:layout_constraintTop_toBottomOf="@id/passwordFieldRegister"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />-->
 
@@ -75,9 +104,9 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Register"
+        android:text="@string/register"
         android:onClick="onRegisterButton_Clicked"
-        app:layout_constraintTop_toBottomOf="@id/passwordField1"
+        app:layout_constraintTop_toBottomOf="@id/passwordFieldRegister"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -98,13 +127,13 @@
         android:id="@+id/toLoginButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="2dp"
         android:layout_marginEnd="8dp"
-        android:text="Login"
+        android:layout_marginBottom="8dp"
         android:onClick="onLoginButton_Clicked"
+        android:text="@string/login"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/alreadyRegisteredText"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/alreadyRegisteredText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
