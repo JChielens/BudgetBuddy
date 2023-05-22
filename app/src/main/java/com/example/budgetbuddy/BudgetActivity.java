@@ -38,7 +38,7 @@ public class BudgetActivity extends AppCompatActivity {
         expenses = intent.getParcelableArrayListExtra("expenses");
         budget = intent.getFloatExtra("budget",0);
 
-        budgetField = (EditText) findViewById(R.id.budgetField);
+        budgetField = (EditText) findViewById(R.id.inputBudgetField);
     }
 
     public void onSubmitBudgetButton_Clicked(View caller) {
