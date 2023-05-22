@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.Layout;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.budgetbuddy.backendLogic.Expense;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,6 +31,7 @@ public class BudgetActivity extends AppCompatActivity {
     private int userId;
     private float budget;
     private EditText budgetField;
+    private TextInputLayout budgetFieldLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,27 @@ public class BudgetActivity extends AppCompatActivity {
         budget = intent.getFloatExtra("budget",0);
 
         budgetField = (EditText) findViewById(R.id.inputBudgetField);
+        budgetFieldLayout = findViewById(R.id.budgetField);
+        setupTextChangedListener();
+    }
+
+    private void setupTextChangedListener() {
+        budgetField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                budgetFieldLayout.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //Do nothing
+            }
+        });
     }
 
     public void onSubmitBudgetButton_Clicked(View caller) {
@@ -52,10 +78,7 @@ public class BudgetActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else{
-            Toast.makeText(
-                    BudgetActivity.this,
-                    "Budget empty",
-                    Toast.LENGTH_LONG).show();
+            budgetFieldLayout.setError("Budget empty");
         }
     }
 
