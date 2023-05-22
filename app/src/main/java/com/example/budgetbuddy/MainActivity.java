@@ -1,25 +1,15 @@
 package com.example.budgetbuddy;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.example.budgetbuddy.backendLogic.DigitFormatter;
 import com.example.budgetbuddy.backendLogic.Expense;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -33,18 +23,13 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.formatter.LargeValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -61,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
     private PieChart pieChart;
     private HashMap<String, Float> expCategoryToAmount;
     private String[][] lastFourMonths;
+
+    private static final DecimalFormat decimalFormat = new DecimalFormat("0.00");
+    private static final DigitFormatter df = new DigitFormatter(2, "€");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
         budget = intent.getFloatExtra("budget",0);
         currentExpenses = getExpensesByMonthAndYear(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
 
-        lblBudgetAmount.setText(budget + " EUR");
-        lblCurrentExpensesAmount.setText(currentExpenses + " EUR");
+        lblBudgetAmount.setText(df.getFormattedValue(budget));
+        lblCurrentExpensesAmount.setText(df.getFormattedValue(currentExpenses));
         setupVisuals();
         }
 
@@ -99,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private float getExpensesByMonthAndYear(int monthToMatch, int yearToMatch){
-        return (float) expenses.stream()
+         return (float) expenses.stream()
                 .filter(e -> e.getDate().startsWith(yearToMatch + "-" + ((monthToMatch >= 10) ? monthToMatch : "0" + monthToMatch)))
                 .mapToDouble(Expense::getAmount)
                 .sum();
@@ -148,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return array;
-
     }
 
     private void addDataToBarChart() {
@@ -161,11 +148,10 @@ public class MainActivity extends AppCompatActivity {
         barDataSet.setValueTextSize(12f);
         barDataSet.setValueTypeface(Typeface.SANS_SERIF);
         barDataSet.setValueTextColor(Color.WHITE);
-        barDataSet.setValueFormatter(new LargeValueFormatter(" EUR"));
+        barDataSet.setValueFormatter(new DigitFormatter(2, "€"));
 
         BarData barData = new BarData(barDataSet);
         barData.setBarWidth(0.7f);
-
         barChart.setData(barData);
     }
 
@@ -176,10 +162,11 @@ public class MainActivity extends AppCompatActivity {
             int year = Integer.parseInt(e.getDate().substring(0,4));
             if(month == LocalDate.now().getMonthValue() && year == LocalDate.now().getYear()){
                 if(expCategoryToAmount.containsKey(e.getCategory())){
-                    expCategoryToAmount.put(e.getCategory(), expCategoryToAmount.get(e.getCategory()) + e.getAmount());
+                    float added = expCategoryToAmount.get(e.getCategory()) + e.getAmount();
+                    expCategoryToAmount.put(e.getCategory(), Float.parseFloat(decimalFormat.format(added)));
                 }
                 else{
-                    expCategoryToAmount.put(e.getCategory(),e.getAmount());
+                    expCategoryToAmount.put(e.getCategory(), Float.parseFloat(decimalFormat.format(e.getAmount())));
                 }
             }
         }
@@ -200,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
         leftAxis.setDrawLabels(false);
         leftAxis.setAxisLineColor(Color.TRANSPARENT);
         // makes Y-axis invisible - The y-axis doesn't get deleted because it changes proportions
-        leftAxis.setValueFormatter(new LargeValueFormatter(" EUR"));
         leftAxis.setDrawGridLines(false);
         // leftAxis.setGranularity(500f);
         leftAxis.setAxisMinimum(0f); // start from zero
@@ -223,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void calculateUnused() {
         if(budget > currentExpenses){
-            expCategoryToAmount.put("Unused", budget - currentExpenses);
+            expCategoryToAmount.put("Unused", Float.parseFloat(decimalFormat.format(budget - currentExpenses)));
         }
     }
 

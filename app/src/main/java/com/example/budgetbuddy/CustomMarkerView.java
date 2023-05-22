@@ -3,6 +3,7 @@ package com.example.budgetbuddy;
 import android.content.Context;
 import android.widget.TextView;
 
+import com.example.budgetbuddy.backendLogic.DigitFormatter;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieEntry;
@@ -11,6 +12,7 @@ import com.github.mikephil.charting.utils.MPPointF;
 
 public class CustomMarkerView extends MarkerView {
     private TextView txtLabelAndAmount;
+    private static final DigitFormatter df = new DigitFormatter(2, "€");
 
     public CustomMarkerView(Context context, int layoutResource) {
         super(context, layoutResource);
@@ -24,7 +26,7 @@ public class CustomMarkerView extends MarkerView {
         String label = ((PieEntry) e).getLabel();
         float value = e.getY();
         // set the entry-value as the display text
-        txtLabelAndAmount.setText(label + ": " + value + " EUR");
+        txtLabelAndAmount.setText(label + ": " + df.getFormattedValue(value));
         // this will perform necessary layouting
         super.refreshContent(e, highlight);
     }

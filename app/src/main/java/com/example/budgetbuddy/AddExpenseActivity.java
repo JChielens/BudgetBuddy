@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 
 public class AddExpenseActivity extends AppCompatActivity {
     private static final String POST_URL = "https://studev.groept.be/api/a22pt403/addRow/";
-    private static final String ID_URL = "https://studev.groept.be/api/a22pt403/getLastIndex";
     private EditText txtDescription;
     private EditText txtAmount;
     private Spinner categorySpinner;
@@ -94,13 +93,16 @@ public class AddExpenseActivity extends AppCompatActivity {
     }
 
     public void onBtnSubmit_Clicked(View Caller){
+        // Get the highest index currently present, empty optional if no expenses yet
         OptionalInt highestIndex = expenses.stream()
                 .mapToInt(Expense::getExpenseId)
                 .max();
+        // Check that all fields are filled in
         if(!txtAmount.getText().toString().trim().isEmpty() &&
                 !lblSelectedDate.getText().toString().trim().isEmpty() &&
                 !txtPlace.getText().toString().trim().isEmpty() &&
                 !txtDescription.getText().toString().trim().isEmpty()){
+            // Create Expense object and add it to the ArrayList and database
             Expense expense = new Expense((highestIndex.isPresent()) ? highestIndex.getAsInt() + 1 : 1,
                     userId, Float.parseFloat(txtAmount.getText().toString().trim()),
                     lblSelectedDate.getText().toString().trim(), txtPlace.getText().toString().trim(),
@@ -126,8 +128,7 @@ public class AddExpenseActivity extends AppCompatActivity {
                 POST_URL,
                 new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String response) {
-                    }
+                    public void onResponse(String response) {}
                 },
                 new Response.ErrorListener(){
                     @Override

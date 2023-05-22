@@ -20,8 +20,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
             android:id="@+id/date"
@@ -38,7 +40,7 @@
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:text="Category: "
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="0dp"
             android:layout_marginTop="4dp"
             app:layout_constraintStart_toEndOf="@+id/removeCheckBox"
             app:layout_constraintTop_toTopOf="parent" />
@@ -48,7 +50,7 @@
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:text="Place: "
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="0dp"
             android:layout_marginTop="4dp"
             app:layout_constraintStart_toEndOf="@id/removeCheckBox"
             app:layout_constraintTop_toBottomOf="@+id/category" />
@@ -68,7 +70,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="Description: "
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="0dp"
             android:layout_marginTop="4dp"
             app:layout_constraintStart_toEndOf="@id/removeCheckBox"
             app:layout_constraintTop_toBottomOf="@+id/amount" />

@@ -14,6 +14,7 @@ import java.util.List;
 public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHolder>{
 
     private List<Expense> expenseList;
+    private static final DigitFormatter df = new DigitFormatter(2, "€");
 
     public ExpenseAdapter(List<Expense> coffeeOrderList){
         this.expenseList = coffeeOrderList;
@@ -33,7 +34,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
         ((TextView) holder.order.findViewById(R.id.date)).setText("Date: " + expense.getDate());
         ((TextView) holder.order.findViewById(R.id.category)).setText("Category: " + expense.getCategory());
         ((TextView) holder.order.findViewById(R.id.place)).setText("Place: " + expense.getPlace());
-        ((TextView) holder.order.findViewById(R.id.amount)).setText("Amount: " + Float.toString(expense.getAmount()));
+        ((TextView) holder.order.findViewById(R.id.amount)).setText("Amount: " + df.getFormattedValue(expense.getAmount()));
         if(expense.getDescription().equals("null") || expense.getDescription().equals("")){
             ((TextView) holder.order.findViewById(R.id.description)).setText("Description:  No description");
         }
