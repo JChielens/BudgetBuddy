@@ -97,15 +97,26 @@ public class AddExpenseActivity extends AppCompatActivity {
         OptionalInt highestIndex = expenses.stream()
                 .mapToInt(Expense::getExpenseId)
                 .max();
-        Expense expense = new Expense((highestIndex.isPresent()) ? highestIndex.getAsInt() + 1 : 1,
-                userId, Float.parseFloat(txtAmount.getText().toString().trim()),
-                lblSelectedDate.getText().toString().trim(), txtPlace.getText().toString().trim(),
-                txtDescription.getText().toString().trim(), categorySpinner.getSelectedItem().toString().trim());
+        if(!txtAmount.getText().toString().trim().isEmpty() &&
+                !lblSelectedDate.getText().toString().trim().isEmpty() &&
+                !txtPlace.getText().toString().trim().isEmpty() &&
+                !txtDescription.getText().toString().trim().isEmpty()){
+            Expense expense = new Expense((highestIndex.isPresent()) ? highestIndex.getAsInt() + 1 : 1,
+                    userId, Float.parseFloat(txtAmount.getText().toString().trim()),
+                    lblSelectedDate.getText().toString().trim(), txtPlace.getText().toString().trim(),
+                    txtDescription.getText().toString().trim(), categorySpinner.getSelectedItem().toString());
 
-        expenses.add(expense);
-        expenses.sort((c1,c2) -> c1.getDate().compareTo(c2.getDate()));
-        postExpense(expense);
-        goToExpenseView();
+            expenses.add(expense);
+            expenses.sort((c1,c2) -> c1.getDate().compareTo(c2.getDate()));
+            postExpense(expense);
+            goToExpenseView();
+        }
+        else{
+            Toast.makeText(
+                    AddExpenseActivity.this,
+                    "Empty/invalid field(s)",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     private void postExpense(Expense expense){
