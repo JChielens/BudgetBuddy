@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,8 +31,11 @@ import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
     private EditText userField;
+    private TextInputLayout userFieldLayout;
     private EditText passField;
+    private TextInputLayout passFieldLayout;
     private EditText emailField;
+    private TextInputLayout emailFieldLayout;
     private static final String POST_URL = "https://studev.groept.be/api/a22pt403/getUsernameIfExists/";
     private static final String POST_REGISTER_URL = "https://studev.groept.be/api/a22pt403/registerUser/";
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
@@ -41,12 +47,65 @@ public class RegisterActivity extends AppCompatActivity {
         userField = (EditText) findViewById(R.id.inputUsernameFieldRegister);
         passField = (EditText) findViewById(R.id.inputPasswordFieldRegister);
         emailField = (EditText) findViewById((R.id.inputEmailField));
+        userFieldLayout = findViewById(R.id.usernameFieldRegister);
+        passFieldLayout = findViewById(R.id.passwordFieldRegister);
+        emailFieldLayout = findViewById((R.id.emailField));
+        setupTextChangedListeners();
+
+    }
+
+    private void setupTextChangedListeners() {
+        userField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //Nothing
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                userFieldLayout.setError(null);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                //Nothing
+            }
+        });
+
+        passField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //Nothing
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                passFieldLayout.setError(null);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                //Nothing
+            }
+        });
+
+        emailField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //Nothing
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                emailFieldLayout.setError(null);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                //Nothing
+            }
+        });
     }
 
     public void onRegisterButton_Clicked(View caller){
-        if(!emailField.getText().toString().trim().isEmpty() &&
-                !userField.getText().toString().trim().isEmpty() &&
-                !passField.getText().toString().trim().isEmpty()){
+        boolean userFieldEmpty = userField.getText().toString().trim().isEmpty();
+        boolean passFieldEmpty = passField.getText().toString().trim().isEmpty();
+        boolean emailFieldEmpty = emailField.getText().toString().trim().isEmpty();
+        if(!emailFieldEmpty && !userFieldEmpty && !passFieldEmpty){
             String email = emailField.getText().toString().trim();
             String username = userField.getText().toString().trim();
             //String regex = "^[a-zA-Z0-9_!#$%&'*+\\=?`{|}~^.-]+@[a-zA-Z0-9]+[.][a-zA-Z0-9]{2,4}$";
@@ -57,15 +116,13 @@ public class RegisterActivity extends AppCompatActivity {
                 //registerUser();
             }
             else{
-                Toast.makeText(RegisterActivity.this,
-                        "Invalid email address",
-                        Toast.LENGTH_LONG).show();
+                emailFieldLayout.setError("Invalid email address");
             }
         }
         else{
-            Toast.makeText(RegisterActivity.this,
-                    "One or more fields empty",
-                    Toast.LENGTH_LONG).show();
+            if (userFieldEmpty){userFieldLayout.setError("Username cannot be empty");}
+            if (passFieldEmpty){passFieldLayout.setError("Password cannot be empty");}
+            if (emailFieldEmpty){emailFieldLayout.setError("Email cannot be empty");}
         }
     }
 
@@ -82,10 +139,7 @@ public class RegisterActivity extends AppCompatActivity {
                             registerUser();
                         }
                         else{
-                            Toast.makeText(
-                                    RegisterActivity.this,
-                                    "Username already used",
-                                    Toast.LENGTH_LONG).show();
+                            userFieldLayout.setError("Username already used");
                         }
                     }
                 },

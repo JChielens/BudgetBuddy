@@ -38,7 +38,6 @@ public class LoginActivity extends AppCompatActivity {
     private ArrayList<Expense> expenses;
     private int userId;
     private float budget;
-
     private TextInputLayout userFieldLayout;
     private TextInputLayout passFieldLayout;
 
@@ -59,17 +58,15 @@ public class LoginActivity extends AppCompatActivity {
         userField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                //Nothing
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 userFieldLayout.setError(null);
             }
-
             @Override
             public void afterTextChanged(Editable s) {
-
+                //Nothing
             }
         });
 
@@ -78,12 +75,10 @@ public class LoginActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 //Nothing
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 passFieldLayout.setError(null);
             }
-
             @Override
             public void afterTextChanged(Editable s) {
                 //Nothing
@@ -99,15 +94,13 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginButton_Clicked(View caller){
         boolean userFieldEmpty = userField.getText().toString().trim().isEmpty();
         boolean passFieldEmpty = passField.getText().toString().trim().isEmpty();
-        if (userFieldEmpty) {
-            userFieldLayout.setError("Username cannot be empty");
-        }
-        if (passFieldEmpty) {
-            passFieldLayout.setError("Password cannot be empty");
-        }
         if(!userFieldEmpty && !passFieldEmpty){
             String hash = hashPassword(passField.getText().toString().trim());
             loginUser(hash);
+        }
+        else{
+            if (userFieldEmpty) {userFieldLayout.setError("Username cannot be empty");}
+            if (passFieldEmpty) {passFieldLayout.setError("Password cannot be empty");}
         }
     }
 
