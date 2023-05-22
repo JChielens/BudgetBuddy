@@ -42,13 +42,21 @@ public class BudgetActivity extends AppCompatActivity {
     }
 
     public void onSubmitBudgetButton_Clicked(View caller) {
-        budget = Float.parseFloat(budgetField.getText().toString());
-        postBudgetToDatabase();
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("userId", userId);
-        intent.putExtra("budget", budget);
-        intent.putParcelableArrayListExtra("expenses", expenses);
-        startActivity(intent);
+        if(!budgetField.getText().toString().trim().isEmpty()){
+            budget = Float.parseFloat(budgetField.getText().toString().trim());
+            postBudgetToDatabase();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("userId", userId);
+            intent.putExtra("budget", budget);
+            intent.putParcelableArrayListExtra("expenses", expenses);
+            startActivity(intent);
+        }
+        else{
+            Toast.makeText(
+                    BudgetActivity.this,
+                    "Budget empty",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     public void onBackButton_clicked(View caller){
