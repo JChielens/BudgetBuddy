@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -54,57 +55,39 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    private boolean isFieldEmpty(TextView textView) {
+        return textView.getText().toString().trim().isEmpty();
+    }
+
     private void setupTextChangedListeners() {
-        userField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                //Nothing
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                userFieldLayout.setError(null);
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-                //Nothing
-            }
-        });
+        userField.addTextChangedListener(getTextWatcher(userFieldLayout));
+        passField.addTextChangedListener(getTextWatcher(passFieldLayout));
+        emailField.addTextChangedListener(getTextWatcher(emailFieldLayout));
+    }
 
-        passField.addTextChangedListener(new TextWatcher() {
+    private TextWatcher getTextWatcher(TextInputLayout textInputLayout) {
+        return new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 //Nothing
             }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                passFieldLayout.setError(null);
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-                //Nothing
-            }
-        });
 
-        emailField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                //Nothing
-            }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                emailFieldLayout.setError(null);
+                textInputLayout.setError(null);
             }
+
             @Override
             public void afterTextChanged(Editable s) {
                 //Nothing
             }
-        });
+        };
     }
 
     public void onRegisterButton_Clicked(View caller){
-        boolean userFieldEmpty = userField.getText().toString().trim().isEmpty();
-        boolean passFieldEmpty = passField.getText().toString().trim().isEmpty();
-        boolean emailFieldEmpty = emailField.getText().toString().trim().isEmpty();
+        boolean userFieldEmpty = isFieldEmpty(userField);
+        boolean passFieldEmpty = isFieldEmpty(passField);
+        boolean emailFieldEmpty = isFieldEmpty(emailField);
         if(!emailFieldEmpty && !userFieldEmpty && !passFieldEmpty){
             String email = emailField.getText().toString().trim();
             String username = userField.getText().toString().trim();

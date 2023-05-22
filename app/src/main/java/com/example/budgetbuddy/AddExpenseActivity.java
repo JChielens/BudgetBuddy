@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -20,6 +22,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.budgetbuddy.backendLogic.Expense;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,9 +39,12 @@ import java.util.stream.Collectors;
 public class AddExpenseActivity extends AppCompatActivity {
     private static final String POST_URL = "https://studev.groept.be/api/a22pt403/addRow/";
     private EditText txtDescription;
+    private TextInputLayout txtDescriptionLayout;
     private EditText txtAmount;
+    private TextInputLayout txtAmountLayout;
     private Spinner categorySpinner;
     private EditText txtPlace;
+    private TextInputLayout txtPlaceLayout;
     private TextView lblSelectedDate;
     private ArrayList<Expense> expenses;
     private int userId;
@@ -54,11 +60,44 @@ public class AddExpenseActivity extends AppCompatActivity {
         categorySpinner = findViewById(R.id.spinner);
         txtPlace = findViewById(R.id.inputTxtPlace);
         lblSelectedDate = findViewById(R.id.lblSelectedDate);
+        txtDescriptionLayout = findViewById(R.id.txtDescription);
+        txtAmountLayout =findViewById(R.id.txtAmount);
+        txtPlaceLayout =findViewById(R.id.txtPlace);
+        setupTextChangedListeners();
 
         Intent intent = getIntent();
         expenses = intent.getParcelableArrayListExtra("expenses");
         userId = intent.getIntExtra("userId", 1);
         budget = intent.getFloatExtra("budget", 0);
+    }
+
+    private boolean isFieldEmpty(TextView textView) {
+        return textView.getText().toString().trim().isEmpty();
+    }
+
+    private void setupTextChangedListeners() {
+        txtDescription.addTextChangedListener(getTextWatcher(txtDescriptionLayout));
+        txtAmount.addTextChangedListener(getTextWatcher(txtAmountLayout));
+        txtPlace.addTextChangedListener(getTextWatcher(txtPlaceLayout));
+    }
+
+    private TextWatcher getTextWatcher(TextInputLayout textInputLayout) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //Nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                textInputLayout.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //Nothing
+            }
+        };
     }
 
     public void onlblSelectedDate(View Caller) {
@@ -71,6 +110,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                lblSelectedDate.setError(null);
                 monthOfYear++;
                 // want alle zaken van Calender class starten maand op index 0
                 if (monthOfYear >= 10 && dayOfMonth >= 10) {
@@ -96,10 +136,8 @@ public class AddExpenseActivity extends AppCompatActivity {
                 .mapToInt(Expense::getExpenseId)
                 .max();
         // Check that all fields are filled in
-        if(!txtAmount.getText().toString().trim().isEmpty() &&
-                !lblSelectedDate.getText().toString().trim().isEmpty() &&
-                !txtPlace.getText().toString().trim().isEmpty() &&
-                !txtDescription.getText().toString().trim().isEmpty()){
+        if(!isFieldEmpty(txtAmount) && !isFieldEmpty(lblSelectedDate) &&
+                !isFieldEmpty(txtPlace) && !isFieldEmpty(txtDescription)){
             // Create Expense object and add it to the ArrayList and database
             Expense expense = new Expense((highestIndex.isPresent()) ? highestIndex.getAsInt() + 1 : 1,
                     userId, Float.parseFloat(txtAmount.getText().toString().trim()),
@@ -111,11 +149,23 @@ public class AddExpenseActivity extends AppCompatActivity {
             goToExpenseView();
         }
         else{
+            setEmptyFieldsErrorMessages();
             Toast.makeText(
                     AddExpenseActivity.this,
                     "Empty/invalid field(s)",
                     Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void setEmptyFieldsErrorMessages() {
+        if (isFieldEmpty(txtAmount)) {
+            txtAmountLayout.setError("Amount cannot be empty");}
+        if (isFieldEmpty(lblSelectedDate)) {
+            lblSelectedDate.setError("Date cannot be empty");}
+        if (isFieldEmpty(txtPlace)) {
+            txtPlaceLayout.setError("Place cannot be empty");}
+        if (isFieldEmpty(txtDescription)) {
+        txtDescriptionLayout.setError("Description cannot be empty");}
     }
 
     private void postExpense(Expense expense){
