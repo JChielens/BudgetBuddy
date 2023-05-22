@@ -149,10 +149,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         }
                         else{
-                            Toast.makeText(
-                                    LoginActivity.this,
-                                    "Username unknown",
-                                    Toast.LENGTH_LONG).show();
+                            userFieldLayout.setError("Username unknown");
                         }
                     }
                 },
@@ -179,10 +176,7 @@ public class LoginActivity extends AppCompatActivity {
                 getExpenses();
             }
             else {
-                Toast.makeText(
-                        LoginActivity.this,
-                        "Password incorrect",
-                        Toast.LENGTH_LONG).show();
+                passFieldLayout.setError("Password incorrect");
             }
         } catch (JSONException e) {
             e.printStackTrace();
