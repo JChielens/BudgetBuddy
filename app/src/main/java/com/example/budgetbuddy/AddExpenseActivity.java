@@ -38,7 +38,6 @@ public class AddExpenseActivity extends AppCompatActivity {
     private EditText txtDescription;
     private EditText txtAmount;
     private Spinner categorySpinner;
-    private TextView txtDate;
     private EditText txtPlace;
     private TextView lblSelectedDate;
     private ArrayList<Expense> expenses;
@@ -50,11 +49,10 @@ public class AddExpenseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_expense);
 
-        txtDescription = findViewById(R.id.txtDescription);
-        txtAmount = findViewById(R.id.txtAmount);
+        txtDescription = findViewById(R.id.inputTxtDescription);
+        txtAmount = findViewById(R.id.inputTxtAmount);
         categorySpinner = findViewById(R.id.spinner);
-        txtPlace = findViewById(R.id.txtPlace);
-        txtDate = findViewById(R.id.lblSelectedDate);
+        txtPlace = findViewById(R.id.inputTxtPlace);
         lblSelectedDate = findViewById(R.id.lblSelectedDate);
 
         Intent intent = getIntent();

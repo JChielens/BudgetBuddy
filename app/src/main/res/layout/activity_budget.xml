@@ -10,57 +10,65 @@
         android:id="@+id/budgetText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="220dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="220dp"
         android:layout_marginEnd="8dp"
-        android:text="BUDGET"
+        android:fontFamily="@font/roboto_condensed_bold"
+        android:text="New Budget"
         android:textAlignment="center"
-        android:typeface="serif"
+        android:textAllCaps="true"
         android:textSize="30sp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/budgetField"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:ems="10"
-        android:inputType="numberDecimal"
         android:hint="Budget"
-        app:layout_constraintTop_toBottomOf="@+id/budgetText"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/budgetText"
+        app:prefixText="€">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputBudgetField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/submitBudgetBtn"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Submit"
         android:onClick="onSubmitBudgetButton_Clicked"
-        app:layout_constraintTop_toBottomOf="@id/budgetField"
+        android:text="Submit"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/budgetField" />
 
     <Button
         android:id="@+id/backButton"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:text="Back"
+        android:layout_marginBottom="32dp"
         android:onClick="onBackButton_clicked"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/back"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
