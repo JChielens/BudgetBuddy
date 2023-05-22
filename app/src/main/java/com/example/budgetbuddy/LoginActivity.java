@@ -4,8 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -27,8 +28,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String LOGIN_URL = "https://studev.groept.be/api/a22pt403/getUserInfo/";
@@ -40,13 +39,56 @@ public class LoginActivity extends AppCompatActivity {
     private int userId;
     private float budget;
 
+    private TextInputLayout userFieldLayout;
+    private TextInputLayout passFieldLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         userField = (TextInputEditText) findViewById(R.id.inputUsernameField);
-        passField = (TextInputEditText) findViewById(R.id.inputPasswordField1);
+        passField = (TextInputEditText) findViewById(R.id.inputPasswordField);
         expenses = new ArrayList<>();
+
+        userFieldLayout = findViewById(R.id.usernameField);
+        passFieldLayout = findViewById(R.id.passwordField);
+        setupTextChangedListeners();
+    }
+
+    private void setupTextChangedListeners() {
+        userField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                userFieldLayout.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        passField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //Nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                passFieldLayout.setError(null);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //Nothing
+            }
+        });
     }
 
     public void onRegisterButton_Clicked(View caller){
@@ -55,16 +97,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginButton_Clicked(View caller){
-        if(!userField.getText().toString().trim().isEmpty() &&
-            !passField.getText().toString().trim().isEmpty()){
+        boolean userFieldEmpty = userField.getText().toString().trim().isEmpty();
+        boolean passFieldEmpty = passField.getText().toString().trim().isEmpty();
+        if (userFieldEmpty) {
+            userFieldLayout.setError("Username cannot be empty");
+        }
+        if (passFieldEmpty) {
+            passFieldLayout.setError("Password cannot be empty");
+        }
+        if(!userFieldEmpty && !passFieldEmpty){
             String hash = hashPassword(passField.getText().toString().trim());
             loginUser(hash);
-        }
-        else{
-            Toast.makeText(
-                    LoginActivity.this,
-                    "Username or password empty",
-                    Toast.LENGTH_LONG).show();
         }
     }
 
