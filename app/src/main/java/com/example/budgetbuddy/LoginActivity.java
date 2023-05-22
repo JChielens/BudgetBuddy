@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         JsonArrayRequest queueRequest = new JsonArrayRequest(
                 Request.Method.GET,
-                LOGIN_URL + userField.getText().toString().trim() + "/" + LocalDate.now().getMonthValue() + "/" + LocalDate.now().getYear(),
+                LOGIN_URL + LocalDate.now().getMonthValue() + "/" + LocalDate.now().getYear() + "/" + userField.getText().toString().trim(),
                 null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -99,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                         else{
                             Toast.makeText(
                                     LoginActivity.this,
-                                    "Username unknown",
+                                    "Username unknown" + response.length(),
                                     Toast.LENGTH_LONG).show();
                         }
                     }
@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(
                                 LoginActivity.this,
-                                "Unable to communicate with the server",
+                                "Unable to communicate with the server check",
                                 Toast.LENGTH_LONG).show();
                     }
                 }
@@ -122,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
             String hashDatabase = user.getString("password");
             if(hashDatabase.equals(hashedPassword) &&
                     user.getString("username").equals(userField.getText().toString().trim())){
-                budget = (float) user.getDouble("budget");
+                budget = (float) ((user.getString("budget").equals("null")) ? 0 : user.getDouble("budget"));
                 userId = user.getInt("id");
                 getExpenses();
             }
