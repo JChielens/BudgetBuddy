@@ -55,8 +55,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginButton_Clicked(View caller){
-        String hash = hashPassword(passField.getText().toString().trim());
-        loginUser(hash);
+        if(!userField.getText().toString().trim().isEmpty() &&
+            !passField.getText().toString().trim().isEmpty()){
+            String hash = hashPassword(passField.getText().toString().trim());
+            loginUser(hash);
+        }
+        else{
+            Toast.makeText(
+                    LoginActivity.this,
+                    "Username or password empty",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     private String hashPassword(String password){
@@ -99,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
                         else{
                             Toast.makeText(
                                     LoginActivity.this,
-                                    "Username unknown" + response.length(),
+                                    "Username unknown",
                                     Toast.LENGTH_LONG).show();
                         }
                     }

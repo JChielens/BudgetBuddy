@@ -44,19 +44,27 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void onRegisterButton_Clicked(View caller){
-        // TODO: register user
-        String email = emailField.getText().toString();
-        String username = userField.getText().toString();
-        //String regex = "^[a-zA-Z0-9_!#$%&'*+\\=?`{|}~^.-]+@[a-zA-Z0-9]+[.][a-zA-Z0-9]{2,4}$";
-        String new_regex = "^[a-zA-Z0-9_!#$%&'*+\\=?`{|}~^.-]{1,64}@[a-zA-Z0-9-]{1,200}([.][a-zA-Z0-9-]{1,52})?([.][a-zA-Z0-9-]{2,4})?[.][a-zA-Z0-9]{2,4}$";
-        //if(email.matches(regex)){
-        if(email.matches(new_regex)){
-            checkIfUsernameExists(username);
-            //registerUser();
+        if(!emailField.getText().toString().trim().isEmpty() &&
+                !userField.getText().toString().trim().isEmpty() &&
+                !passField.getText().toString().trim().isEmpty()){
+            String email = emailField.getText().toString().trim();
+            String username = userField.getText().toString().trim();
+            //String regex = "^[a-zA-Z0-9_!#$%&'*+\\=?`{|}~^.-]+@[a-zA-Z0-9]+[.][a-zA-Z0-9]{2,4}$";
+            String new_regex = "^[a-zA-Z0-9_!#$%&'*+\\=?`{|}~^.-]{1,64}@[a-zA-Z0-9-]{1,200}([.][a-zA-Z0-9-]{1,52})?([.][a-zA-Z0-9-]{2,4})?[.][a-zA-Z0-9]{2,4}$";
+            //if(email.matches(regex)){
+            if(email.matches(new_regex)){
+                checkIfUsernameExists(username);
+                //registerUser();
+            }
+            else{
+                Toast.makeText(RegisterActivity.this,
+                        "Invalid email address",
+                        Toast.LENGTH_LONG).show();
+            }
         }
         else{
             Toast.makeText(RegisterActivity.this,
-                    "Invalid email address",
+                    "One or more fields empty",
                     Toast.LENGTH_LONG).show();
         }
     }

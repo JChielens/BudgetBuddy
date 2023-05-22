@@ -105,7 +105,6 @@ public class AddExpenseActivity extends AppCompatActivity {
                     userId, Float.parseFloat(txtAmount.getText().toString().trim()),
                     lblSelectedDate.getText().toString().trim(), txtPlace.getText().toString().trim(),
                     txtDescription.getText().toString().trim(), categorySpinner.getSelectedItem().toString());
-
             expenses.add(expense);
             expenses.sort((c1,c2) -> c1.getDate().compareTo(c2.getDate()));
             postExpense(expense);
