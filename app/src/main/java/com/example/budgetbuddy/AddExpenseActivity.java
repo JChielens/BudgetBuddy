@@ -150,10 +150,6 @@ public class AddExpenseActivity extends AppCompatActivity {
         }
         else{
             setEmptyFieldsErrorMessages();
-            Toast.makeText(
-                    AddExpenseActivity.this,
-                    "Empty/invalid field(s)",
-                    Toast.LENGTH_LONG).show();
         }
     }
 
