@@ -11,7 +11,7 @@
         android:id="@+id/lblOverview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="24dp"
         android:drawablePadding="10dp"
         app:drawableTint="@color/white"
         android:gravity="center"
@@ -116,43 +116,19 @@
         android:id="@+id/barChart"
         android:layout_width="300dp"
         android:layout_height="150dp"
-        android:layout_marginBottom="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/lblBarChart"
+        android:layout_marginBottom="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/lblBarChart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Expenses of the last 4 months"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/btnExpenses" />
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pieChart"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:layout_marginBottom="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/lblPieChart"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/barChart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/lblPieChart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Expenses per category"
-        android:layout_marginBottom="4dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/barChart" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
