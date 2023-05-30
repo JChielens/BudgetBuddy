@@ -136,7 +136,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_condensed_bolditalic"
         android:textSize="12sp"
-        android:text="Total Expenses Per Month:"
+        android:text="Total expenses of last four months:"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/barChart"
         app:layout_constraintStart_toStartOf="@+id/guideline2" />
@@ -151,6 +151,5 @@
         android:text="This month's expenses:"
         app:layout_constraintBottom_toTopOf="@+id/pieChart"
         app:layout_constraintStart_toStartOf="@+id/guideline2" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
