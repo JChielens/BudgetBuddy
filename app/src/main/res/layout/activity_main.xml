@@ -124,11 +124,33 @@
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pieChart"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="280dp"
         app:layout_constraintBottom_toTopOf="@+id/barChart"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblCurrentExpenses" />
+
+    <TextView
+        android:id="@+id/lblBarChart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_condensed_bolditalic"
+        android:textSize="12sp"
+        android:text="Total Expenses Per Month:"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/barChart"
+        app:layout_constraintStart_toStartOf="@+id/guideline2" />
+
+    <TextView
+        android:id="@+id/lblPieChart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_condensed_bolditalic"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:text="This month's expenses:"
+        app:layout_constraintBottom_toTopOf="@+id/pieChart"
+        app:layout_constraintStart_toStartOf="@+id/guideline2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
